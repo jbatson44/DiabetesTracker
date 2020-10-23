@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "SignIn";
+}
+
+<h2>Sign In</h2>
+
+<br />
+<br />
+<div>
+    <label for="user">Username:</label>
+    <input type="text" id="user" /><br />
+    <label for="pass">Password:</label>
+    <input type="password" id="pass" />
+    <p id="loginError" style="color:red;"></p>
+    <input type="button" value="Login" id="login" />
+    @Html.ActionLink("Create an account", "CreateAccount", "Login")
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#login').click(function () {
+            var userName = $('#user').val();
+            var passWord = $('#pass').val();
+
+            if (!userName || !passWord) {
+                $('#loginError').text("Please enter your username and password!");
+            }
+            else {
+                $('#loginError').text("");
+                $.ajax({
+                    url: "/Login/Login",
+                    data: {
+                        'userName': userName,
+                        'passWord': passWord
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        var url = '@Url.Action("Index", "Home", new { userId = "__id__" })';
+                        window.location.href = url.replace('__id__', data.userId);
+                    },
+                    error: function (data) {
+                        $('#loginError').text("Username or password is incorrect");
+                    }
+                });
+            }
+        });
+    });
+</script>

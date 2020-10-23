@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "CreateAccount";
+}
+
+<h2>Create Account</h2>
+<div>
+    <label for="first">First Name:</label>
+    <input type="text" id="first" /><br />
+    <label for="last">Last Name:</label>
+    <input type="text" id="last" /><br />
+    <label for="user">Username:</label>
+    <input type="text" id="user" /><br />
+    <label for="pass">Password:</label>
+    <input type="password" id="pass" /><br />
+    <p id="createError" style="color:red;"></p>
+    <input type="button" value="Create account" id="create" />
+    @Html.ActionLink("Go to login", "SignIn", "Login")
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#create').click(function () {
+            var firstName = $('#first').val();
+            var lastName = $('#last').val();
+            var userName = $('#user').val();
+            var passWord = $('#pass').val();
+
+            if (!userName || !passWord || !firstName || !lastName) {
+                $('#createError').text("Please fill all fields");
+            }
+            else {
+                $('#createError').text("");
+                $.ajax({
+                    url: "/Login/CreateNewUser",
+                    data: {
+                        'userName': userName,
+                        'passWord': passWord,
+                        'firstName': firstName,
+                        'lastName': lastName
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        alert("Account created")
+                    },
+                    error: function (data) {
+                        alert("Failed to create account")
+                    }
+                });
+            }
+        });
+    });
+</script>

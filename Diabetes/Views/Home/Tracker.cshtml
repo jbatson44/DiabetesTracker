@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+@model Diabetes.Models.User
+<h2>Tracker</h2>
+
+<div>
+    <input type="button" id="lastSeven" value="Last 7 Days" />
+</div>
+<div>
+    @if (Model.bloodSugarEntries != null)
+     {
+        <ul>
+        @foreach (var entry in Model.bloodSugarEntries)
+        {
+            <li>@entry.bloodSugar @entry.insertTime</li>
+        }
+        </ul>
+     }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#lastSeven').click(function () {
+            var timeFrame = 7;
+            $.ajax({
+                url: "/Home/GetData",
+                data: {
+                    'timeFrame': timeFrame
+                },
+                type: "POST",
+                success: function (data) {
+                    alert("time get");
+                    var url = '@Url.Action("Tracker", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                    alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+</script>
