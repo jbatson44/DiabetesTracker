@@ -26,6 +26,12 @@ namespace Diabetes.Controllers
             return View(user);
         }
 
+        public ActionResult SignOut()
+        {
+            user = null;
+            return RedirectToAction("SignIn", "Login");
+        }
+
         private void LoadUser(int userId)
         {
             using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
@@ -133,8 +139,8 @@ namespace Diabetes.Controllers
 
         public ActionResult GetData(int timeFrame)
         {
-            DateTime beginTime = DateTime.Now;
-            DateTime endTime = beginTime.AddDays(-timeFrame);
+            DateTime endTime = DateTime.Now;
+            DateTime beginTime = endTime.AddDays(-timeFrame);
             using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
             {
                 using (SqlCommand cmd = new SqlCommand("spcGetUserBloodSugarByTimeFrame", conn))
@@ -154,7 +160,7 @@ namespace Diabetes.Controllers
                         BloodSugarEntry bloodSugarEntry = new BloodSugarEntry
                         {
                             bloodSugar = int.Parse(rdr["BSLevel"].ToString()),
-                            insertTime = new DateTime(long.Parse(rdr["creationDate"].ToString()))
+                            insertTime = (DateTime)rdr["creationDate"]
                         };
 
                         user.bloodSugarEntries.Add(bloodSugarEntry);
