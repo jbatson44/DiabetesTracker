@@ -14,7 +14,7 @@ namespace Diabetes.Controllers
         public static User user;
         public ActionResult Index(int? userId)
         {
-            if (userId == 0 || userId == null)
+            if ((userId == 0 || userId == null) && user == null)
             {
                 return RedirectToAction("SignIn", "Login");
             }
@@ -137,10 +137,45 @@ namespace Diabetes.Controllers
             return View(user);
         }
 
-        public ActionResult GetData(int timeFrame)
+        public ActionResult GetDataByTimeframe(int timeFrame, bool includeBlood, bool includeCarbs, bool includeInsulin)
         {
             DateTime endTime = DateTime.Now;
             DateTime beginTime = endTime.AddDays(-timeFrame);
+
+            if (includeBlood)
+            {
+                GetBloodSugar(endTime, beginTime);
+            }
+            if (includeCarbs)
+            {
+                GetCarbs(endTime, beginTime);
+            }
+            if (includeInsulin)
+            {
+                GetInsulin(endTime, beginTime);
+            }
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetDataByDates(DateTime endTime, DateTime beginTime, bool includeBlood, bool includeCarbs, bool includeInsulin)
+        {
+            if (includeBlood)
+            {
+                GetBloodSugar(endTime, beginTime);
+            }
+            if (includeCarbs)
+            {
+                GetCarbs(endTime, beginTime);
+            }
+            if (includeInsulin)
+            {
+                GetInsulin(endTime, beginTime);
+            }
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public void GetBloodSugar(DateTime endTime, DateTime beginTime)
+        {
             using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
             {
                 using (SqlCommand cmd = new SqlCommand("spcGetUserBloodSugarByTimeFrame", conn))
@@ -169,7 +204,71 @@ namespace Diabetes.Controllers
                     conn.Close();
                 }
             }
-            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public void GetCarbs(DateTime endTime, DateTime beginTime)
+        {
+            using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcGetUserCarbsByTimeFrame", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@userID", SqlDbType.VarChar).Value = user.userId;
+                    cmd.Parameters.Add("@beginDate", SqlDbType.DateTime).Value = beginTime;
+                    cmd.Parameters.Add("@endDate", SqlDbType.DateTime).Value = endTime;
+
+                    conn.Open();
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    user.carbEntries = new List<CarbEntry>();
+                    while (rdr.Read())
+                    {
+                        CarbEntry carbEntry = new CarbEntry
+                        {
+                            carbs = int.Parse(rdr["carbs"].ToString()),
+                            insertTime = (DateTime)rdr["creationDate"]
+                        };
+
+                        user.carbEntries.Add(carbEntry);
+                    }
+
+                    conn.Close();
+                }
+            }
+        }
+
+        public void GetInsulin(DateTime endTime, DateTime beginTime)
+        {
+            using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcGetUserInsulinByTimeFrame", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@userID", SqlDbType.VarChar).Value = user.userId;
+                    cmd.Parameters.Add("@beginDate", SqlDbType.DateTime).Value = beginTime;
+                    cmd.Parameters.Add("@endDate", SqlDbType.DateTime).Value = endTime;
+
+                    conn.Open();
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    user.insulinEntries = new List<InsulinEntry>();
+                    while (rdr.Read())
+                    {
+                        InsulinEntry insulinEntry = new InsulinEntry
+                        {
+                            units = int.Parse(rdr["units"].ToString()),
+                            insertTime = (DateTime)rdr["creationDate"],
+                            insulinType = int.Parse(rdr["insulinType"].ToString())
+                        };
+
+                        user.insulinEntries.Add(insulinEntry);
+                    }
+
+                    conn.Close();
+                }
+            }
         }
     }
 }

@@ -8,25 +8,121 @@
     <input type="button" id="lastSeven" value="Last 7 Days" />
 </div>
 <div>
+    <label for="beginTime">Start Time:</label>
+    <input type="datetime-local" id="beginTime" />
+    <label for="endTime">End Time:</label>
+    <input type="datetime-local" id="endTime" /><br />
+    <input type="button" id="dates" value="Get Data"/>
+</div>
+<div>
+    <label for="bloodSugar">Blood Sugar:</label>
+    <input type="checkbox" id="bloodSugar" value="Blood" />
+    <label for="carbs">Carbs:</label>
+    <input type="checkbox" id="carbs" value="Carbs" />
+    <label for="insulin">Insulin:</label>
+    <input type="checkbox" id="insulin" value="Insulin" />
+</div>
+<div>
     @if (Model.bloodSugarEntries != null)
-     {
-        <ul>
-        @foreach (var entry in Model.bloodSugarEntries)
-        {
-            <li>@entry.bloodSugar @entry.insertTime</li>
-        }
-        </ul>
-     }
+    {
+        <div class="col-md-4">
+            <h3>Blood Sugar</h3>
+            <ul>
+                @foreach (var entry in Model.bloodSugarEntries)
+                {
+                    <li>@entry.bloodSugar blood sugar @entry.insertTime</li>
+                }
+            </ul>
+        </div>
+    }
+    @if (Model.carbEntries != null)
+    {
+        <div class="col-md-4">
+            <h3>Carbs</h3>
+            <ul>
+                @foreach (var entry in Model.carbEntries)
+                {
+                    <li>@entry.carbs carbs @entry.insertTime</li>
+                }
+            </ul>
+        </div>
+    }
+    @if (Model.insulinEntries != null)
+    {
+        <div class="col-md-4">
+            <h3>Insulin</h3>
+            <ul>
+                @foreach (var entry in Model.insulinEntries)
+                {
+                    <li>@entry.units units @entry.insertTime</li>
+                }
+            </ul>
+        </div>
+    }
 </div>
 
 <script>
     $(document).ready(function () {
         $('#lastSeven').click(function () {
+            var includeBlood = false;
+            var includeCarbs = false;
+            var includeInsulin = false;
+            if ($("#bloodSugar").is(':checked')) {
+                includeBlood = true;
+            }
+            if ($("#carbs").is(':checked')) {
+                includeCarbs = true;
+            }
+            if ($("#insulin").is(':checked')) {
+                includeInsulin = true;
+            }
             var timeFrame = 7;
             $.ajax({
-                url: "/Home/GetData",
+                url: "/Home/GetDataByTimeframe",
                 data: {
-                    'timeFrame': timeFrame
+                    'timeFrame': timeFrame,
+                    'includeBlood': includeBlood,
+                    'includeCarbs': includeCarbs,
+                    'includeInsulin': includeInsulin
+                },
+                type: "POST",
+                success: function (data) {
+                   // alert("time get");
+                    var url = '@Url.Action("Tracker", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   // alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('#dates').click(function () {
+            var includeBlood = false;
+            var includeCarbs = false;
+            var includeInsulin = false;
+            if ($("#bloodSugar").is(':checked')) {
+                includeBlood = true;
+            }
+            if ($("#carbs").is(':checked')) {
+                includeCarbs = true;
+            }
+            if ($("#insulin").is(':checked')) {
+                includeInsulin = true;
+            }
+            var beginTime = $('#beginTime').val();
+            var endTime = $('#endTime').val();
+            $.ajax({
+                url: "/Home/GetDataByDates",
+                data: {
+                    'beginTime': beginTime,
+                    'endTime': endTime,
+                    'includeBlood': includeBlood,
+                    'includeCarbs': includeCarbs,
+                    'includeInsulin': includeInsulin
                 },
                 type: "POST",
                 success: function (data) {
