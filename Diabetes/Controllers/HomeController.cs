@@ -204,6 +204,7 @@ namespace Diabetes.Controllers
                     conn.Close();
                 }
             }
+            CalculateA1c();
         }
 
         public void GetCarbs(DateTime endTime, DateTime beginTime)
@@ -268,6 +269,16 @@ namespace Diabetes.Controllers
 
                     conn.Close();
                 }
+            }
+        }
+
+        public void CalculateA1c()
+        {
+            if (user.bloodSugarEntries != null)
+            {
+                int total = user.bloodSugarEntries.Sum(x => x.bloodSugar);
+                double average = total / user.bloodSugarEntries.Count;
+                user.A1c = (46.7 + average) / 28.7;
             }
         }
     }
