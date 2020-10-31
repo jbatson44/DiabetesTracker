@@ -6,6 +6,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
+
 
 namespace Diabetes.Controllers
 {
@@ -154,7 +156,8 @@ namespace Diabetes.Controllers
             {
                 GetInsulin(endTime, beginTime);
             }
-            return Json("success", JsonRequestBehavior.AllowGet);
+            var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
+            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetDataByDates(DateTime endTime, DateTime beginTime, bool includeBlood, bool includeCarbs, bool includeInsulin)
@@ -171,7 +174,8 @@ namespace Diabetes.Controllers
             {
                 GetInsulin(endTime, beginTime);
             }
-            return Json("success", JsonRequestBehavior.AllowGet);
+            var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
+            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         public void GetBloodSugar(DateTime endTime, DateTime beginTime)
@@ -274,7 +278,7 @@ namespace Diabetes.Controllers
 
         public void CalculateA1c()
         {
-            if (user.bloodSugarEntries != null)
+            if (user.bloodSugarEntries != null && user.bloodSugarEntries.Count > 0)
             {
                 int total = user.bloodSugarEntries.Sum(x => x.bloodSugar);
                 double average = total / user.bloodSugarEntries.Count;

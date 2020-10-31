@@ -4,20 +4,20 @@
     ViewBag.Title = "SignIn";
 }
 
-    <div class="center-block" style="width:40%">
-        <h2 class="pageTitle">Sign In</h2>
+<div class="center-block" style="width:70%">
+    <h2 class="pageTitle">Sign In</h2>
 
-        <br />
-        <label for="user">Username:</label>
-        <input type="text" id="user" /><br />
-        <label for="pass">Password:</label>
-        <input type="password" id="pass" />
-        <p id="loginError" style="color:red;"></p>
-        <input type="button" value="Login" id="login" />
-        @Html.ActionLink("Create an account", "CreateAccount", "Login")
-    </div>
+    <br />
+    <label for="user">Username:</label>
+    <input type="text" id="user" size="15"/><br />
+    <label for="pass">Password:</label>
+    <input type="password" id="pass"  size="15"/>
+    <p id="loginError" style="color:red;"></p>
+    <input type="button" value="Login" id="login" />
+    @Html.ActionLink("Create an account", "CreateAccount", "Login")
+</div>
 
-    <script>
+<script>
     $(document).ready(function () {
         $('#login').click(function () {
             var userName = $('#user').val();
@@ -46,4 +46,4 @@
             }
         });
     });
-    </script>
+</script>
