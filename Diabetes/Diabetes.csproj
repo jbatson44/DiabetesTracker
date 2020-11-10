@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="Models\BloodSugarEntry.cs" />
     <Compile Include="Models\CarbEntry.cs" />
+    <Compile Include="Models\DBConnect.cs" />
     <Compile Include="Models\InsulinEntry.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
