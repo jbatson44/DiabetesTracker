@@ -135,7 +135,7 @@ namespace Diabetes.Models
         
         public void AddBloodSugarLevel(int BSLevel, DateTime dateTime, int userId)
         {
-            using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcAddBloodSugarLevel", conn))
                 {
@@ -153,7 +153,7 @@ namespace Diabetes.Models
 
         public void AddCarbs(int carbs, DateTime dateTime, int userId)
         {
-            using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcAddCarbs", conn))
                 {
@@ -171,7 +171,7 @@ namespace Diabetes.Models
 
         public void AddInsulin(int units, DateTime dateTime, int insulinType, int userId)
         {
-            using (SqlConnection conn = new SqlConnection("Server=LAPTOP-PRFN4MOU;Database=Diabetes;Trusted_Connection=True;"))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcAddInsulin", conn))
                 {

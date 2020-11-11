@@ -27,6 +27,7 @@ namespace Diabetes.Controllers
                 database = new DBConnect();
                 user = new User();
                 database.LoadUser((int)userId, user);
+                GetDataByTimeframe(30, true, true, true);
             }
             return View(user);
         }
@@ -124,6 +125,51 @@ namespace Diabetes.Controllers
                 double average = total / user.bloodSugarEntries.Count;
                 user.A1c = (46.7 + average) / 28.7;
             }
+        }
+
+        [HttpPost]
+        public JsonResult NewChart()
+        {
+            DateTime earliest = DateTime.Now.AddDays(-30);
+            List<object> iData = new List<object>();
+            //Creating sample data  
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Date", System.Type.GetType("System.String"));
+            dt.Columns.Add("Blood", System.Type.GetType("System.Int32"));
+
+            foreach(BloodSugarEntry bse in user.bloodSugarEntries)
+            {
+                if (bse.insertTime > earliest && bse.insertTime < DateTime.Now)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
+                    dr["Blood"] = bse.bloodSugar;
+                    dt.Rows.Add(dr);
+                }
+            }
+
+            DateTime current = earliest;
+            List<object> labels = new List<object>();
+            while (current < DateTime.Today)
+            {
+                labels.Add(current);
+                current = current.AddDays(1);
+            }
+            iData.Add(labels);
+            //Looping and extracting each DataColumn to List<Object>  
+            foreach (DataColumn dc in dt.Columns)
+            {
+                List<object> x = new List<object>();
+                x = (from DataRow drr in dt.Rows select drr[dc.ColumnName]).ToList();
+                x.Reverse();
+                iData.Add(x);
+            }
+            List<object> beginEnd = new List<object>();
+            beginEnd.Add(earliest.ToString("yyyy-MM-ddTHH:mm:ss"));
+            beginEnd.Add(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
+            iData.Add(beginEnd);
+            //Source data returned as JSON  
+            return Json(iData, JsonRequestBehavior.AllowGet);
         }
     }
 }
