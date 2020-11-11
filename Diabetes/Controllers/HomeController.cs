@@ -128,9 +128,11 @@ namespace Diabetes.Controllers
         }
 
         [HttpPost]
-        public JsonResult NewChart()
+        public JsonResult BSChart()
         {
-            DateTime earliest = DateTime.Now.AddDays(-30);
+            DateTime furthestBack = user.bloodSugarEntries.Last().insertTime;
+            DateTime earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+           
             List<object> iData = new List<object>();
             //Creating sample data  
             DataTable dt = new DataTable();
@@ -139,11 +141,103 @@ namespace Diabetes.Controllers
 
             foreach(BloodSugarEntry bse in user.bloodSugarEntries)
             {
-                if (bse.insertTime > earliest && bse.insertTime < DateTime.Now)
+                if (bse.insertTime >= earliest && bse.insertTime < DateTime.Now)
                 {
                     DataRow dr = dt.NewRow();
                     dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
                     dr["Blood"] = bse.bloodSugar;
+                    dt.Rows.Add(dr);
+                }
+            }
+
+            DateTime current = earliest;
+            List<object> labels = new List<object>();
+            while (current < DateTime.Today)
+            {
+                labels.Add(current);
+                current = current.AddDays(1);
+            }
+            iData.Add(labels);
+            //Looping and extracting each DataColumn to List<Object>  
+            foreach (DataColumn dc in dt.Columns)
+            {
+                List<object> x = new List<object>();
+                x = (from DataRow drr in dt.Rows select drr[dc.ColumnName]).ToList();
+                x.Reverse();
+                iData.Add(x);
+            }
+            List<object> beginEnd = new List<object>();
+            beginEnd.Add(earliest.ToString("yyyy-MM-ddTHH:mm:ss"));
+            beginEnd.Add(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
+            iData.Add(beginEnd);
+            //Source data returned as JSON  
+            return Json(iData, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult InsulinChart()
+        {
+            DateTime furthestBack = user.insulinEntries.Last().insertTime;
+            DateTime earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+
+            List<object> iData = new List<object>();
+            //Creating sample data  
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Date", System.Type.GetType("System.String"));
+            dt.Columns.Add("Insulin", System.Type.GetType("System.Int32"));
+
+            foreach (InsulinEntry bse in user.insulinEntries)
+            {
+                if (bse.insertTime >= earliest && bse.insertTime < DateTime.Now)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
+                    dr["Insulin"] = bse.insulinType;
+                    dt.Rows.Add(dr);
+                }
+            }
+
+            DateTime current = earliest;
+            List<object> labels = new List<object>();
+            while (current < DateTime.Today)
+            {
+                labels.Add(current);
+                current = current.AddDays(1);
+            }
+            iData.Add(labels);
+            //Looping and extracting each DataColumn to List<Object>  
+            foreach (DataColumn dc in dt.Columns)
+            {
+                List<object> x = new List<object>();
+                x = (from DataRow drr in dt.Rows select drr[dc.ColumnName]).ToList();
+                x.Reverse();
+                iData.Add(x);
+            }
+            List<object> beginEnd = new List<object>();
+            beginEnd.Add(earliest.ToString("yyyy-MM-ddTHH:mm:ss"));
+            beginEnd.Add(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
+            iData.Add(beginEnd);
+            //Source data returned as JSON  
+            return Json(iData, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult CarbChart()
+        {
+            DateTime furthestBack = user.carbEntries.Last().insertTime;
+            DateTime earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+
+            List<object> iData = new List<object>();
+            //Creating sample data  
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Date", System.Type.GetType("System.String"));
+            dt.Columns.Add("Carbs", System.Type.GetType("System.Int32"));
+
+            foreach (CarbEntry bse in user.carbEntries)
+            {
+                if (bse.insertTime >= earliest && bse.insertTime < DateTime.Now)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
+                    dr["Carbs"] = bse.carbs;
                     dt.Rows.Add(dr);
                 }
             }

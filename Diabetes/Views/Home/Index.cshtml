@@ -6,46 +6,124 @@
 <h1>Welcome @Model.firstName @Model.lastName</h1>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0-rc.1/Chart.bundle.js"></script>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-<div id='myDiv'></div>
-@*<div class="container">
-    <canvas id="examChart"></canvas>
+
+<div>
+    <input type="button" id="lastSeven" value="Last 7 Days" />
+    <input type="button" id="lastThirty" value="Last 30 Days" />
 </div>
-<div Style="font-family: Corbel; font-size: small ;text-align:center " class="row">
-    <div style="width:100%;height:100%">
-        <canvas id="myChart" style="padding: 0;margin: auto;display: block; "> </canvas>
-    </div>
-</div>*@
+
+<div id='BSChart'></div>
+<div id='InsulinChart'></div>
+<div id='CarbChart'></div>
+
 <script>
-    $.ajax({
-        type: "POST",
-        url: "/Home/NewChart",
-        //data: {
-        //    'timeframe': 7
-        //},
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (chData) {
-            var data = [
-                {
-                    x: chData[1],
-                    y: chData[2],
-                    type: 'scatter'
-                }
-            ];
-            var layout = {
-                xaxis: {
-                    range: [new Date(chData[3][0]), new Date(chData[3][1])],
-                    type: 'date'
-                },
-                yaxis: {
-                    autorange: true,
-                    range: [0, 400],
-                    type: 'linear'
-                }
-            };
-            Plotly.newPlot('myDiv', data, layout);
-        }
+    $(document).ready(function () {
+        dataByTimeframe(7);
+        $('#lastSeven').click(function () {
+            dataByTimeframe(7);
+        });
+        $('#lastThirty').click(function () {
+            dataByTimeframe(30);
+        });
     });
+    function dataByTimeframe(timeFrame) {
+        $.ajax({
+            url: "/Home/GetDataByTimeframe",
+            data: {
+                'timeFrame': timeFrame,
+                'includeBlood': true,
+                'includeCarbs': true,
+                'includeInsulin': true
+            },
+            type: "POST",
+            success: function (data) {
+                updateBSChart();
+                updateInsulinChart();
+                updateCarbChart();
+            },
+            error: function (data) {
+            }
+        });
+    }
+    function updateChart(chData, mainTitle, yTitle, chartId) {
+        var data = [
+            {
+                x: chData[1],
+                y: chData[2],
+                type: 'scatter'
+            }
+        ];
+        var layout = {
+            title: {
+                text: mainTitle,
+                font: {
+                    //family: 'Courier New, monospace',
+                    size: 24
+                },
+                xref: 'paper',
+                x: 0.05,
+            },
+            xaxis: {
+                title: {
+                    text: 'Date',
+                    font: {
+                        //family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                },
+                range: [new Date(chData[3][0]), new Date(chData[3][1])],
+                type: 'date'
+            },
+            yaxis: {
+                title: {
+                    text: yTitle,
+                    font: {
+                        //family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                },
+                autorange: true,
+                range: [0, 400],
+                type: 'linear'
+            }
+        };
+        Plotly.newPlot(chartId, data, layout);
+    }
+    function updateBSChart() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/BSChart",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                updateChart(chData, 'Blood Sugar', 'Blood Sugar Level', 'BSChart');
+            }
+        });
+    }
+    function updateInsulinChart() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/InsulinChart",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                updateChart(chData, 'Insulin', 'Units of Insulin', 'InsulinChart');
+            }
+        });
+    }
+    function updateCarbChart() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/CarbChart",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                updateChart(chData, 'Carbs', 'Carbs Eaten', 'CarbChart');
+            }
+        });
+    }
 
 </script>
 <script>
