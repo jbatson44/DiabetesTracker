@@ -14,5 +14,7 @@ namespace Diabetes.Models
         public List<CarbEntry> carbEntries { get; set; }
         public List<BloodSugarEntry> bloodSugarEntries { get; set; }
         public double A1c { get; set; }
+        public DateTime chosenDate { get; set; }
+        public List<Entry> allEntries { get; set; }
     }
 }

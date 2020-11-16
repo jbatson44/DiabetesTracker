@@ -128,6 +128,7 @@
     <Compile Include="Models\BloodSugarEntry.cs" />
     <Compile Include="Models\CarbEntry.cs" />
     <Compile Include="Models\DBConnect.cs" />
+    <Compile Include="Models\Entry.cs" />
     <Compile Include="Models\InsulinEntry.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -176,6 +177,7 @@
     <Content Include="Views\Login\CreateAccount.cshtml" />
     <Content Include="Views\Login\SignIn.Mobile.cshtml" />
     <Content Include="Views\Shared\LoggedOut_Layout.cshtml" />
+    <Content Include="Views\Home\Calendar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

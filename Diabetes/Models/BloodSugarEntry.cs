@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Diabetes.Models
 {
-    public class BloodSugarEntry
+    public class BloodSugarEntry : Entry
     {
         public int bloodSugar { get; set; }
-        public DateTime insertTime { get; set; }
     }
 }

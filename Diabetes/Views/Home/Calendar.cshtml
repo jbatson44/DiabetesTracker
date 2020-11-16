@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "Calendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Diabetes.Models.User
+@using Diabetes.Models
+    <br />
+<div>
+    <div class="col-md-4">
+        <input type="button" id="dayBefore" />
+    </div>
+    <div class="col-md-4">
+        <h2>@Model.chosenDate.ToString("M/d/yyyy")</h2>
+    </div>
+    <div class="col-md-4">
+        @if (Model.chosenDate == DateTime.Today)
+        {
+            <input type="button" id="dayAfter" disabled />
+        }
+        else
+        {
+            <input type="button" id="dayAfter" />
+        }
+    </div>
+    <div>
+        <div class="col-md-6">
+            <h2>Add Data</h2>
+            <label for="bloodSugar">Blood Sugar:</label>
+            <input type="number" id="bloodSugar" /><br />
+            <label for="insulin">Insulin:</label>
+            <input type="number" id="insulin" /><br />
+            <label for="carbs">Carbs:</label>
+            <input type="number" id="carbs" /><br />
+            <p id="CarbsError" style="color:red;"></p>
+            <input type="button" value="Add" id="Add" />
+        </div>
+        <div class="col-md-6">
+            <div id="results">
+                
+                                <ul>
+                                    @foreach (Entry entry in Model.allEntries)
+                                    {
+                                        if (entry.insertTime.Year == Model.chosenDate.Year &&
+                                            entry.insertTime.Month == Model.chosenDate.Month &&
+                                            entry.insertTime.Day == Model.chosenDate.Day)
+                                        {
+                                            if (entry is CarbEntry)
+                                            {
+                                                CarbEntry c = (CarbEntry)entry;
+                                            <li>
+                                                Ate @c.carbs carbs at @c.insertTime
+                                            </li>
+                                            }
+                                            else if (entry is BloodSugarEntry)
+                                            {
+                                                BloodSugarEntry b = (BloodSugarEntry)entry;
+                                            <li>
+                                                Blood sugar level of @b.bloodSugar at @b.insertTime
+                                            </li>
+                                            }
+                                            else if (entry is InsulinEntry)
+                                            {
+                                                InsulinEntry i = (InsulinEntry)entry;
+                                            <li>
+                                                Took @i.units units at @i.insertTime
+                                            </li>
+                                            }
+                                        }
+                                    }
+                                </ul>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#dayBefore').click(function () {
+            $.ajax({
+                url: "/Home/IncrementDecrementDate",
+                data: {
+                    'move': -1
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Calendar", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   // alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('#dayAfter').click(function () {
+            $.ajax({
+                url: "/Home/IncrementDecrementDate",
+                data: {
+                    'move': 1
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Calendar", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   // alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+</script>
+

@@ -36,7 +36,7 @@
                     },
                     type: "POST",
                     success: function (data) {
-                        var url = '@Url.Action("Index", "Home", new { userId = "__id__" })';
+                        var url = '@Url.Action("Calendar", "Home", new { userId = "__id__" })';
                         window.location.href = url.replace('__id__', data.userId);
                     },
                     error: function (data) {

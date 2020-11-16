@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Diabetes.Models
 {
-    public class InsulinEntry : Entry
+    public class Entry
     {
-        public int units { get; set; }
-        public int insulinType { get; set; }
+        public DateTime insertTime { get; set; }
     }
 }

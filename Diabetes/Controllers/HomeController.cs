@@ -28,8 +28,36 @@ namespace Diabetes.Controllers
                 user = new User();
                 database.LoadUser((int)userId, user);
                 GetDataByTimeframe(30, true, true, true);
+                user.chosenDate = DateTime.Today;
             }
             return View(user);
+        }
+
+        public ActionResult Calendar(int? userId)
+        {
+            if ((userId == 0 || userId == null) && user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+            if (user == null)
+            {
+                database = new DBConnect();
+                user = new User();
+                database.LoadUser((int)userId, user);
+                user.allEntries = new List<Entry>();
+                GetDataByTimeframe(30, true, true, true);
+                user.chosenDate = DateTime.Today;
+            }
+            return View(user);
+        }
+
+        public ActionResult IncrementDecrementDate(int move)
+        {
+            user.chosenDate = user.chosenDate.AddDays(move);
+            
+            GetDataByDates(DateTime.Now, user.chosenDate, true, true, true);
+            
+            return Json("success", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SignOut()
@@ -81,18 +109,22 @@ namespace Diabetes.Controllers
             DateTime endTime = DateTime.Now;
             DateTime beginTime = endTime.AddDays(-timeFrame);
 
+            user.allEntries.Clear();
             if (includeBlood)
             {
                 database.GetBloodSugar(endTime, beginTime, user);
                 CalculateA1c();
+                user.allEntries.AddRange(user.bloodSugarEntries);
             }
             if (includeCarbs)
             {
                 database.GetCarbs(endTime, beginTime, user);
+                user.allEntries.AddRange(user.carbEntries);
             }
             if (includeInsulin)
             {
                 database.GetInsulin(endTime, beginTime, user);
+                user.allEntries.AddRange(user.insulinEntries);
             }
             var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
             return Json(json, JsonRequestBehavior.AllowGet);
@@ -100,18 +132,23 @@ namespace Diabetes.Controllers
 
         public ActionResult GetDataByDates(DateTime endTime, DateTime beginTime, bool includeBlood, bool includeCarbs, bool includeInsulin)
         {
+            user.allEntries.Clear();
+
             if (includeBlood)
             {
                 database.GetBloodSugar(endTime, beginTime, user);
                 CalculateA1c();
+                user.allEntries.AddRange(user.bloodSugarEntries);
             }
             if (includeCarbs)
             {
                 database.GetCarbs(endTime, beginTime, user);
+                user.allEntries.AddRange(user.carbEntries);
             }
             if (includeInsulin)
             {
                 database.GetInsulin(endTime, beginTime, user);
+                user.allEntries.AddRange(user.insulinEntries);
             }
             var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
             return Json(json, JsonRequestBehavior.AllowGet);
@@ -121,7 +158,7 @@ namespace Diabetes.Controllers
         {
             if (user.bloodSugarEntries != null && user.bloodSugarEntries.Count > 0)
             {
-                int total = user.bloodSugarEntries.Sum(x => x.bloodSugar);
+                int total = (int)user.bloodSugarEntries.Sum(x => x.bloodSugar);
                 double average = total / user.bloodSugarEntries.Count;
                 user.A1c = (46.7 + average) / 28.7;
             }
@@ -191,7 +228,7 @@ namespace Diabetes.Controllers
                 {
                     DataRow dr = dt.NewRow();
                     dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
-                    dr["Insulin"] = bse.insulinType;
+                    dr["Insulin"] = bse.units;
                     dt.Rows.Add(dr);
                 }
             }
