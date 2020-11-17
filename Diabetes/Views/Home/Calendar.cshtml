@@ -65,7 +65,7 @@
                                             {
                                                 CarbEntry c = (CarbEntry)entry;
                                             <li>
-                                                Ate <b>@c.carbs</b> carbs at <b>@c.insertTime</b>
+                                                Ate <b>@c.carbs</b> carbs at <b>@c.insertTime.ToString("h:mm tt")</b>
                                                 <input type="button" onclick="deleteCarbsEntry(@entry.entryID)"/>
                                             </li>
                                             }
@@ -73,7 +73,7 @@
                                             {
                                                 BloodSugarEntry b = (BloodSugarEntry)entry;
                                 <li>
-                                    Blood sugar level of <b>@b.bloodSugar</b> at <b>@b.insertTime</b>
+                                    Blood sugar level of <b>@b.bloodSugar</b> at <b>@b.insertTime.ToString("h:mm tt")</b>
                                     <input type="button" onclick="deleteBloodSugarEntry(@entry.entryID)" />
                                 </li>
                                             }
@@ -81,7 +81,7 @@
                                             {
                                                 InsulinEntry i = (InsulinEntry)entry;
                                 <li>
-                                    Took <b>@i.units</b> units at <b>@i.insertTime</b>
+                                    Took <b>@i.units</b> units at <b>@i.insertTime.ToString("h:mm tt")</b>
                                     <input type="button" onclick="deleteInsulinEntry(@entry.entryID)" />
                                 </li>
                                             }

@@ -48,7 +48,7 @@ namespace Diabetes.Controllers
                 GetDataByTimeframe(30, true, true, true);
                 user.chosenDate = DateTime.Today;
             }
-            GetDataByTimeframe(5, true, true, true);
+            GetDataByDates(user.chosenDate.AddDays(1), user.chosenDate, true, true, true);
             return View(user);
         }
 
