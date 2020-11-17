@@ -57,7 +57,8 @@ namespace Diabetes.Models
                         BloodSugarEntry bloodSugarEntry = new BloodSugarEntry
                         {
                             bloodSugar = int.Parse(rdr["BSLevel"].ToString()),
-                            insertTime = (DateTime)rdr["creationDate"]
+                            insertTime = (DateTime)rdr["creationDate"],
+                            entryID = int.Parse(rdr["ID"].ToString())
                         };
 
                         user.bloodSugarEntries.Add(bloodSugarEntry);
@@ -89,7 +90,8 @@ namespace Diabetes.Models
                         CarbEntry carbEntry = new CarbEntry
                         {
                             carbs = int.Parse(rdr["carbs"].ToString()),
-                            insertTime = (DateTime)rdr["creationDate"]
+                            insertTime = (DateTime)rdr["creationDate"],
+                            entryID = int.Parse(rdr["ID"].ToString())
                         };
 
                         user.carbEntries.Add(carbEntry);
@@ -122,7 +124,8 @@ namespace Diabetes.Models
                         {
                             units = int.Parse(rdr["units"].ToString()),
                             insertTime = (DateTime)rdr["creationDate"],
-                            insulinType = int.Parse(rdr["insulinType"].ToString())
+                            insulinType = int.Parse(rdr["insulinType"].ToString()),
+                            entryID = int.Parse(rdr["ID"].ToString())
                         };
 
                         user.insulinEntries.Add(insulinEntry);
@@ -151,6 +154,23 @@ namespace Diabetes.Models
             }
         }
 
+        public void DeleteBloodSugarLevel(int entryId, int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcDeleteBloodSugarEntry", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@userId", SqlDbType.VarChar).Value = userId;
+                    cmd.Parameters.Add("@entryId", SqlDbType.Int).Value = entryId;
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public void AddCarbs(int carbs, DateTime dateTime, int userId)
         {
             using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
@@ -162,6 +182,23 @@ namespace Diabetes.Models
                     cmd.Parameters.Add("@user", SqlDbType.VarChar).Value = userId;
                     cmd.Parameters.Add("@carbs", SqlDbType.Int).Value = carbs;
                     cmd.Parameters.Add("@date", SqlDbType.DateTime).Value = dateTime;
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteCarbs(int entryId, int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcDeleteCarbEntry", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@userId", SqlDbType.VarChar).Value = userId;
+                    cmd.Parameters.Add("@entryId", SqlDbType.Int).Value = entryId;
 
                     conn.Open();
                     cmd.ExecuteNonQuery();
@@ -181,6 +218,23 @@ namespace Diabetes.Models
                     cmd.Parameters.Add("@units", SqlDbType.Int).Value = units;
                     cmd.Parameters.Add("@date", SqlDbType.DateTime).Value = dateTime;
                     cmd.Parameters.Add("@insulinType", SqlDbType.Int).Value = insulinType;
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteInsulin(int entryId, int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcDeleteInsulinEntry", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@userId", SqlDbType.VarChar).Value = userId;
+                    cmd.Parameters.Add("@entryId", SqlDbType.Int).Value = entryId;
 
                     conn.Open();
                     cmd.ExecuteNonQuery();

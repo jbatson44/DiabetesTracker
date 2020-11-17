@@ -8,5 +8,6 @@ namespace Diabetes.Models
     public class Entry
     {
         public DateTime insertTime { get; set; }
+        public int entryID { get; set; }
     }
 }

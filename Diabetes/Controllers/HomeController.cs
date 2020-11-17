@@ -48,6 +48,7 @@ namespace Diabetes.Controllers
                 GetDataByTimeframe(30, true, true, true);
                 user.chosenDate = DateTime.Today;
             }
+            GetDataByTimeframe(5, true, true, true);
             return View(user);
         }
 
@@ -82,15 +83,54 @@ namespace Diabetes.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult AddBloodSugarLevelTwo(int BSLevel, DateTime dateTime, int hours, int minutes)
+        {
+            DateTime date = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hours, minutes, 0);
+            database.AddBloodSugarLevel(BSLevel, date, user.userId);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteBloodSugar(int entryId)
+        {
+            database.DeleteBloodSugarLevel(entryId, user.userId);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AddCarbs(int carbs, DateTime dateTime)
         {
             database.AddCarbs(carbs, dateTime, user.userId);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult AddCarbsTwo(int carbs, DateTime dateTime, int hours, int minutes)
+        {
+            DateTime date = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hours, minutes, 0);
+            database.AddCarbs(carbs, date, user.userId);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteCarbs(int entryId)
+        {
+            database.DeleteCarbs(entryId, user.userId);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AddInsulin(int units, DateTime dateTime, int insulinType)
         {
             database.AddInsulin(units, dateTime, insulinType, user.userId);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AddInsulinTwo(int units, DateTime dateTime, int insulinType, int hours, int minutes)
+        {
+            DateTime date = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hours, minutes, 0);
+            database.AddInsulin(units, date, insulinType, user.userId);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteInsulin(int entryId)
+        {
+            database.DeleteInsulin(entryId, user.userId);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
 
@@ -126,6 +166,7 @@ namespace Diabetes.Controllers
                 database.GetInsulin(endTime, beginTime, user);
                 user.allEntries.AddRange(user.insulinEntries);
             }
+            user.allEntries = user.allEntries.OrderBy(entry => entry.insertTime).ToList();
             var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
             return Json(json, JsonRequestBehavior.AllowGet);
         }
@@ -150,6 +191,7 @@ namespace Diabetes.Controllers
                 database.GetInsulin(endTime, beginTime, user);
                 user.allEntries.AddRange(user.insulinEntries);
             }
+            user.allEntries = user.allEntries.OrderBy(entry => entry.insertTime).ToList();
             var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
             return Json(json, JsonRequestBehavior.AllowGet);
         }
