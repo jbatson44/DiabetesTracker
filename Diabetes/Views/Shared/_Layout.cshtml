@@ -22,9 +22,9 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Calendar", "Home")</li>
-                    <li>@Html.ActionLink("Add Data", "AddData", "Home")</li>
+                    @*<li>@Html.ActionLink("Add Data", "AddData", "Home")</li>*@
                     <li>@Html.ActionLink("Trends", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Tracker", "Tracker", "Home")</li>
+                    @*<li>@Html.ActionLink("Tracker", "Tracker", "Home")</li>*@
                     <li>@Html.ActionLink("Sign Out", "SignOut", "Home")</li>
                 </ul>
             </div>
@@ -32,12 +32,12 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
 
+    </div>
+    <br />
+    <footer>
+        <p style="padding:10px 10px 10px 10px">&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+    </footer>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

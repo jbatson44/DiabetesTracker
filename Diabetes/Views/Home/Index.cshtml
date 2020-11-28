@@ -16,6 +16,21 @@
 <div id='InsulinChart'></div>
 <div id='CarbChart'></div>
 
+<div>
+    <h2>Export Data</h2>
+    <input type="datetime-local" id="startTime" />
+    <input type="datetime-local" id="endTime" />
+
+    <label for="bloodSugar">Blood Sugar:</label>
+    <input type="checkbox" id="bloodSugar" value="Blood" />
+    <label for="carbs">Carbs:</label>
+    <input type="checkbox" id="carbs" value="Carbs" />
+    <label for="insulin">Insulin:</label>
+    <input type="checkbox" id="insulin" value="Insulin" />
+
+    <input type="button" id="exportButton" value="Export" />
+</div>
+
 <script>
     $(document).ready(function () {
         dataByTimeframe(7);
@@ -24,6 +39,44 @@
         });
         $('#lastThirty').click(function () {
             dataByTimeframe(30);
+        });
+        $('#exportButton').click(function () {
+            console.log("here1");
+            var includeBlood = false;
+            var includeCarbs = false;
+            var includeInsulin = false;
+            if ($("#bloodSugar").is(':checked')) {
+                includeBlood = true;
+            }
+            if ($("#carbs").is(':checked')) {
+                includeCarbs = true;
+            }
+            if ($("#insulin").is(':checked')) {
+                includeInsulin = true;
+            }
+            console.log("here2");
+            var startTime = $('#startTime').val();
+            var endTime = $('#endTime').val();
+            console.log(endTime);
+            if ((startTime != null && endTime != null) && (includeBlood == true || includeCarbs == true || includeInsulin == true)) {
+                $.ajax({
+                    url: "/Home/CreateExcelFile",
+                    data: {
+                        'startTime': startTime,
+                        'endTime': endTime,
+                        'includeBlood': includeBlood,
+                        'includeCarbs': includeCarbs,
+                        'includeInsulin': includeInsulin
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        alert("succes");
+                    },
+                    error: function (data) {
+                        alert("failure");
+                    }
+                });
+            }
         });
     });
     function dataByTimeframe(timeFrame) {
@@ -46,6 +99,7 @@
         });
     }
     function updateChart(chData, mainTitle, yTitle, chartId) {
+        console.log(chData)
         var data = [
             {
                 x: chData[1],

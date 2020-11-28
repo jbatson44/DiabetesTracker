@@ -6,22 +6,28 @@
 @using Diabetes.Models
     <br />
 <div>
-    <div class="col-md-4">
-        <input type="button" id="dayBefore" />
+    <div>
+        <div class="col-md-4">
+            <input type="button" id="dayBefore" />
+        </div>
+        <div class="col-md-4">
+            <h2 style="text-align:center;">@Model.chosenDate.ToString("M/d/yyyy")</h2>
+        </div>
+        <div class="col-md-2">
+            @if (Model.chosenDate == DateTime.Today)
+            {
+                <input type="button" id="dayAfter" disabled />
+            }
+            else
+            {
+                <input type="button" id="dayAfter" />
+            }
+        </div>
+        <div class="col-md-2">
+            <h3>A1c: @Model.A1c.ToString("0.00")</h3>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2 style="text-align:center;">@Model.chosenDate.ToString("M/d/yyyy")</h2>
-    </div>
-    <div class="col-md-4">
-        @if (Model.chosenDate == DateTime.Today)
-        {
-            <input type="button" id="dayAfter" disabled />
-        }
-        else
-        {
-            <input type="button" id="dayAfter" />
-        }
-    </div>
+
     <div>
         <div class="col-md-6">
             <h2>Add Data</h2>
@@ -54,46 +60,46 @@
         <div class="col-md-6">
             <div id="results">
                 <br />
-                                <ul>
-                                    @foreach (Entry entry in Model.allEntries)
-                                    {
-                                        if (entry.insertTime.Year == Model.chosenDate.Year &&
-                                            entry.insertTime.Month == Model.chosenDate.Month &&
-                                            entry.insertTime.Day == Model.chosenDate.Day)
-                                        {
-                                            if (entry is CarbEntry)
-                                            {
-                                                CarbEntry c = (CarbEntry)entry;
-                                            <li>
-                                                Ate <b>@c.carbs</b> carbs at <b>@c.insertTime.ToString("h:mm tt")</b>
-                                                <input type="button" onclick="deleteCarbsEntry(@entry.entryID)"/>
-                                            </li>
-                                            }
-                                            else if (entry is BloodSugarEntry)
-                                            {
-                                                BloodSugarEntry b = (BloodSugarEntry)entry;
-                                <li>
-                                    Blood sugar level of <b>@b.bloodSugar</b> at <b>@b.insertTime.ToString("h:mm tt")</b>
-                                    <input type="button" onclick="deleteBloodSugarEntry(@entry.entryID)" />
-                                </li>
-                                            }
-                                            else if (entry is InsulinEntry)
-                                            {
-                                                InsulinEntry i = (InsulinEntry)entry;
-                                <li>
-                                    Took <b>@i.units</b> units at <b>@i.insertTime.ToString("h:mm tt")</b>
-                                    <input type="button" onclick="deleteInsulinEntry(@entry.entryID)" />
-                                </li>
-                                            }
-                                            <br />
-                                        }
-                                    }
-                                </ul>
-                
+                <ul>
+                    @foreach (Entry entry in Model.allEntries)
+                    {
+                        if (entry.insertTime.Year == Model.chosenDate.Year &&
+                            entry.insertTime.Month == Model.chosenDate.Month &&
+                            entry.insertTime.Day == Model.chosenDate.Day)
+                        {
+                            if (entry is CarbEntry)
+                            {
+                                CarbEntry c = (CarbEntry)entry;
+                            <li>
+                                Ate <b>@c.carbs</b> carbs at <b>@c.insertTime.ToString("h:mm tt")</b>
+                                <input type="button" onclick="deleteCarbsEntry(@entry.entryID)"/>
+                            </li>
+                            }
+                            else if (entry is BloodSugarEntry)
+                            {
+                                BloodSugarEntry b = (BloodSugarEntry)entry;
+                <li>
+                    Blood sugar level of <b>@b.bloodSugar</b> at <b>@b.insertTime.ToString("h:mm tt")</b>
+                    <input type="button" onclick="deleteBloodSugarEntry(@entry.entryID)" />
+                </li>
+                            }
+                            else if (entry is InsulinEntry)
+                            {
+                                InsulinEntry i = (InsulinEntry)entry;
+                <li>
+                    Took <b>@i.units</b> units at <b>@i.insertTime.ToString("h:mm tt")</b>
+                    <input type="button" onclick="deleteInsulinEntry(@entry.entryID)" />
+                </li>
+                            }
+                            <br />
+                        }
+                    }
+                </ul>
             </div>
         </div>
     </div>
 </div>
+<br /><br /><br /><br /><br /><br />
 <script>
     function deleteBloodSugarEntry(entryId) {
         $.ajax({

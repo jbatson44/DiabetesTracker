@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using System.Configuration;
+using ClosedXML.Excel;
 
 namespace Diabetes.Controllers
 {
@@ -209,9 +210,12 @@ namespace Diabetes.Controllers
         [HttpPost]
         public JsonResult BSChart()
         {
-            DateTime furthestBack = user.bloodSugarEntries.Last().insertTime;
-            DateTime earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
-           
+            DateTime earliest = new DateTime();
+            if (user.bloodSugarEntries != null && user.bloodSugarEntries.Count > 0)
+            {
+                DateTime furthestBack = user.bloodSugarEntries.Last().insertTime;
+                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+            }
             List<object> iData = new List<object>();
             //Creating sample data  
             DataTable dt = new DataTable();
@@ -255,9 +259,12 @@ namespace Diabetes.Controllers
         [HttpPost]
         public JsonResult InsulinChart()
         {
-            DateTime furthestBack = user.insulinEntries.Last().insertTime;
-            DateTime earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
-
+            DateTime earliest = new DateTime();
+            if (user.insulinEntries != null && user.insulinEntries.Count > 0)
+            {
+                DateTime furthestBack = user.insulinEntries.Last().insertTime;
+                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+            }
             List<object> iData = new List<object>();
             //Creating sample data  
             DataTable dt = new DataTable();
@@ -301,9 +308,12 @@ namespace Diabetes.Controllers
         [HttpPost]
         public JsonResult CarbChart()
         {
-            DateTime furthestBack = user.carbEntries.Last().insertTime;
-            DateTime earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
-
+            DateTime earliest = new DateTime();
+            if (user.carbEntries != null && user.carbEntries.Count > 0)
+            {
+                DateTime furthestBack = user.carbEntries.Last().insertTime;
+                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+            }
             List<object> iData = new List<object>();
             //Creating sample data  
             DataTable dt = new DataTable();
@@ -343,6 +353,19 @@ namespace Diabetes.Controllers
             iData.Add(beginEnd);
             //Source data returned as JSON  
             return Json(iData, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult CreateExcelFile(DateTime startTime, DateTime endTime, bool includeBlood, bool includeCarbs, bool includeInsulin)
+        {
+            GetDataByDates(endTime, startTime, includeBlood, includeCarbs, includeInsulin);
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Sample Sheet");
+                // copy what I did for mela
+            }
+
+            return Json("success", JsonRequestBehavior.AllowGet);
         }
     }
 }
