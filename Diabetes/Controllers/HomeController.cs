@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using System.Configuration;
 using ClosedXML.Excel;
+using System.IO;
 
 namespace Diabetes.Controllers
 {
@@ -359,13 +360,84 @@ namespace Diabetes.Controllers
         public ActionResult CreateExcelFile(DateTime startTime, DateTime endTime, bool includeBlood, bool includeCarbs, bool includeInsulin)
         {
             GetDataByDates(endTime, startTime, includeBlood, includeCarbs, includeInsulin);
-            using (var workbook = new XLWorkbook())
+            using (IXLWorkbook workbook = new XLWorkbook())
             {
-                var worksheet = workbook.Worksheets.Add("Sample Sheet");
+                var worksheet = workbook.Worksheets.Add();
                 // copy what I did for mela
+                int rowNum = 1;
+                int colNum = 1;
+
+                if (includeBlood && user.bloodSugarEntries != null && user.bloodSugarEntries.Count > 0)
+                {
+                    worksheet.Cell(rowNum, colNum).SetValue("Date");
+                    worksheet.Cell(rowNum, colNum + 1).SetValue("Blood Sugar Level");
+
+                    foreach (BloodSugarEntry bse in user.bloodSugarEntries)
+                    {
+                        rowNum++;
+                        worksheet.Cell(rowNum, colNum).SetValue(bse.insertTime);
+                        worksheet.Cell(rowNum, colNum + 1).SetValue(bse.bloodSugar);
+                    }
+                    colNum += 2;
+                    rowNum = 1;
+                }
+
+                if (includeCarbs && user.carbEntries != null && user.carbEntries.Count > 0)
+                {
+                    worksheet.Cell(rowNum, colNum).SetValue("Date");
+                    worksheet.Cell(rowNum, colNum + 1).SetValue("Carbs");
+
+                    foreach (CarbEntry ce in user.carbEntries)
+                    {
+                        rowNum++;
+                        worksheet.Cell(rowNum, colNum).SetValue(ce.insertTime);
+                        worksheet.Cell(rowNum, colNum + 1).SetValue(ce.carbs);
+                    }
+                    colNum += 2;
+                    rowNum = 1;
+                }
+
+                if (includeInsulin && user.insulinEntries != null && user.insulinEntries.Count > 0)
+                {
+                    worksheet.Cell(rowNum, colNum).SetValue("Date");
+                    worksheet.Cell(rowNum, colNum + 1).SetValue("Units");
+
+                    foreach (InsulinEntry ie in user.insulinEntries)
+                    {
+                        if (ie.insulinType == 1)
+                        {
+                            rowNum++;
+                            worksheet.Cell(rowNum, colNum).SetValue(ie.insertTime);
+                            worksheet.Cell(rowNum, colNum + 1).SetValue(ie.units);
+                        }
+                    }
+                }
+                worksheet.Columns().AdjustToContents();
+
+                string fileName = user.firstName + "_" + user.lastName + "-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+                string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
+                using (var filestream = new MemoryStream())
+                {
+                   // workbook.SaveAs(Path.Combine(Server.MapPath("~/temp"), fileName));
+                    //filestream.Flush();
+
+                    //return File(filestream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadshetml.sheet", fileName);
+                }
+                workbook.SaveAs(fullPath);
+                return Json(new { fileName = fileName });
             }
 
-            return Json("success", JsonRequestBehavior.AllowGet);
+            //return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult DownloadExcelFile(string fileName)
+        {
+            //Get the temp folder and file path in server
+            string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
+            byte[] fileByteArray = System.IO.File.ReadAllBytes(fullPath);
+            System.IO.File.Delete(fullPath);
+            return File(fileByteArray, "application/vnd.ms-excel", fileName);
         }
     }
 }

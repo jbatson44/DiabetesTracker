@@ -41,7 +41,6 @@
             dataByTimeframe(30);
         });
         $('#exportButton').click(function () {
-            console.log("here1");
             var includeBlood = false;
             var includeCarbs = false;
             var includeInsulin = false;
@@ -54,10 +53,10 @@
             if ($("#insulin").is(':checked')) {
                 includeInsulin = true;
             }
-            console.log("here2");
+
             var startTime = $('#startTime').val();
             var endTime = $('#endTime').val();
-            console.log(endTime);
+
             if ((startTime != null && endTime != null) && (includeBlood == true || includeCarbs == true || includeInsulin == true)) {
                 $.ajax({
                     url: "/Home/CreateExcelFile",
@@ -70,7 +69,9 @@
                     },
                     type: "POST",
                     success: function (data) {
-                        alert("succes");
+                        //alert("succes");
+                        //var response = JSON.parse(data);
+                        window.location.href = "@Url.RouteUrl(new { Controller = "Home", Action = "DownloadExcelFile" })/?fileName=" + data.fileName;
                     },
                     error: function (data) {
                         alert("failure");
