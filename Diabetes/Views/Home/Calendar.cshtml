@@ -6,25 +6,23 @@
 @using Diabetes.Models
     <br />
 <div>
+    <h1>@Model.firstName @Model.lastName</h1>
     <div>
-        <div class="col-md-4">
-            <input type="button" id="dayBefore" />
-        </div>
-        <div class="col-md-4">
-            <h2 style="text-align:center;">@Model.chosenDate.ToString("M/d/yyyy")</h2>
-        </div>
-        <div class="col-md-2">
+        <div class="col-md-6">
+            <input type="button" id="dayBefore" value="Previous Day"/>
             @if (Model.chosenDate == DateTime.Today)
             {
-                <input type="button" id="dayAfter" disabled />
+                <input type="button" id="dayAfter" value="Next Day" disabled />
             }
             else
             {
-                <input type="button" id="dayAfter" />
+                <input type="button" id="dayAfter" value="Next Day"/>
             }
+            <h2>@Model.chosenDate.ToString("M/d/yyyy")</h2>
+
         </div>
-        <div class="col-md-2">
-            <h3>A1c: @Model.A1c.ToString("0.00")</h3>
+        <div class="col-md-6">
+            <h3>A1c: @Model.A1c.ToString("0.00")</h3><br /><br />
         </div>
     </div>
 

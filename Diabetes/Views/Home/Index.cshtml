@@ -3,13 +3,19 @@
 }
 @model Diabetes.Models.User
 @*<script src="~/Scripts/Chart.js"></script>*@
-<h1>Welcome @Model.firstName @Model.lastName</h1>
+<h1>Trends</h1>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0-rc.1/Chart.bundle.js"></script>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 
 <div>
     <input type="button" id="lastSeven" value="Last 7 Days" />
     <input type="button" id="lastThirty" value="Last 30 Days" />
+
+    <label for="beginTime">Start Time:</label>
+    <input type="datetime-local" id="beginTimeChart" />
+    <label for="endTime">End Time:</label>
+    <input type="datetime-local" id="endTimeChart" /><br />
+    <input type="button" id="dates" value="Get Data" />
 </div>
 
 <div id='BSChart'></div>
@@ -39,6 +45,31 @@
         });
         $('#lastThirty').click(function () {
             dataByTimeframe(30);
+        });
+        $('#dates').click(function () {
+            var beginTime = $('#beginTimeChart').val();
+            var endTime = $('#endTimeChart').val();
+
+            if (beginTime !== null && endTime !== null) {
+                $.ajax({
+                    url: "/Home/GetDataByDates",
+                    data: {
+                        'beginTime': beginTime,
+                        'endTime': endTime,
+                        'includeBlood': true,
+                        'includeCarbs': true,
+                        'includeInsulin': true
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        updateBSChart();
+                        updateInsulinChart();
+                        updateCarbChart();
+                    },
+                    error: function (data) {
+                    }
+                });
+            }
         });
         $('#exportButton').click(function () {
             var includeBlood = false;
@@ -181,95 +212,4 @@
     }
 
 </script>
-<script>
-    var ctx = document.getElementById("examChart").getContext("2d");
 
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [new Date("2015-3-15 13:3").toLocaleString(), new Date("2015-3-25 13:2").toLocaleString(), new Date("2015-4-25 14:12").toLocaleString()],
-            datasets: [{
-                label: 'Demo',
-                data: [{
-                    t: new Date("2015-3-15 13:3"),
-                    y: 12
-                },
-                {
-                    t: new Date("2015-3-25 13:2"),
-                    y: 21
-                },
-                {
-                    t: new Date("2015-4-25 14:12"),
-                    y: 32
-                }
-                ],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                xAxes: [{
-                    type: 'time',
-                    distribution: 'linear'
-                }]
-            }
-        }
-    });
-</script>
-<script>
-    $.ajax({
-        type: "POST",
-        url: "/Home/NewChart",
-        //data: {
-        //    'timeframe': 7
-        //},
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (chData) {
-            var aData = chData;
-            var aLabels = aData[0];
-            var aDatasets1 = aData[2];
-            var dataT = {
-                labels: aLabels,
-                datasets: [{
-                    label: "Test Data",
-                    data: aDatasets1,
-                    fill: false,
-                    backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
-                    borderColor: ["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
-                    borderWidth: 1
-                }]
-            };
-            var ctx = $("#myChart").get(0).getContext("2d");
-            var myNewChart = new Chart(ctx, {
-                type: 'line',
-                data: dataT,
-                options: {
-                    responsive: true,
-                    title: { display: true, text: 'CHART.JS DEMO CHART' },
-                    legend: { position: 'bottom' },
-                    scales: {
-                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
-                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' }, ticks: { stepSize: 50, beginAtZero: true } }]
-                    },
-                }
-            });
-        }
-    });
-</script>
