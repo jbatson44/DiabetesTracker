@@ -136,7 +136,7 @@ namespace Diabetes.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Tracker()
+        public ActionResult Export()
         {
             if (user == null)
             {

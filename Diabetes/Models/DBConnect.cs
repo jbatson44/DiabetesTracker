@@ -10,9 +10,56 @@ namespace Diabetes.Models
 {
     public class DBConnect
     {
+        public int Login(string userName, string passWord)
+        {
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcLogin", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@userName", SqlDbType.VarChar).Value = userName;
+                    cmd.Parameters.Add("@passWord", SqlDbType.VarChar).Value = passWord;
+
+                    conn.Open();
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    int id = 0;
+                    while (rdr.Read())
+                    {
+                        id = int.Parse(rdr["ID"].ToString());
+                    }
+
+                    conn.Close();
+
+                    return id;
+                }
+            }
+        }
+
+        public void CreateUser(string firstName, string lastName, string userName, string passWord)
+        {
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spcAddNewUser", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@FirstName", SqlDbType.VarChar).Value = firstName;
+                    cmd.Parameters.Add("@LastName", SqlDbType.VarChar).Value = lastName;
+                    cmd.Parameters.Add("@UserName", SqlDbType.VarChar).Value = userName;
+                    cmd.Parameters.Add("@PassWord", SqlDbType.VarChar).Value = passWord;
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+
+                    conn.Close();
+                }
+            }
+        }
         public void LoadUser(int userId, User user)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcGetUser", conn))
                 {
@@ -38,7 +85,7 @@ namespace Diabetes.Models
         }
         public void GetBloodSugar(DateTime endTime, DateTime beginTime, User user)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcGetUserBloodSugarByTimeFrame", conn))
                 {
@@ -71,7 +118,7 @@ namespace Diabetes.Models
 
         public void GetCarbs(DateTime endTime, DateTime beginTime, User user)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcGetUserCarbsByTimeFrame", conn))
                 {
@@ -104,7 +151,7 @@ namespace Diabetes.Models
 
         public void GetInsulin(DateTime endTime, DateTime beginTime, User user)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcGetUserInsulinByTimeFrame", conn))
                 {
@@ -138,7 +185,7 @@ namespace Diabetes.Models
         
         public void AddBloodSugarLevel(int BSLevel, DateTime dateTime, int userId)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcAddBloodSugarLevel", conn))
                 {
@@ -156,7 +203,7 @@ namespace Diabetes.Models
 
         public void DeleteBloodSugarLevel(int entryId, int userId)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcDeleteBloodSugarEntry", conn))
                 {
@@ -173,7 +220,7 @@ namespace Diabetes.Models
 
         public void AddCarbs(int carbs, DateTime dateTime, int userId)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcAddCarbs", conn))
                 {
@@ -191,7 +238,7 @@ namespace Diabetes.Models
 
         public void DeleteCarbs(int entryId, int userId)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcDeleteCarbEntry", conn))
                 {
@@ -208,7 +255,7 @@ namespace Diabetes.Models
 
         public void AddInsulin(int units, DateTime dateTime, int insulinType, int userId)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcAddInsulin", conn))
                 {
@@ -227,7 +274,7 @@ namespace Diabetes.Models
 
         public void DeleteInsulin(int entryId, int userId)
         {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabase"].ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DiabetesDatabaseProd"].ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("spcDeleteInsulinEntry", conn))
                 {

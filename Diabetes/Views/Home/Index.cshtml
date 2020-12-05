@@ -22,20 +22,6 @@
 <div id='InsulinChart'></div>
 <div id='CarbChart'></div>
 
-<div>
-    <h2>Export Data</h2>
-    <input type="datetime-local" id="startTime" />
-    <input type="datetime-local" id="endTime" />
-
-    <label for="bloodSugar">Blood Sugar:</label>
-    <input type="checkbox" id="bloodSugar" value="Blood" />
-    <label for="carbs">Carbs:</label>
-    <input type="checkbox" id="carbs" value="Carbs" />
-    <label for="insulin">Insulin:</label>
-    <input type="checkbox" id="insulin" value="Insulin" />
-
-    <input type="button" id="exportButton" value="Export" />
-</div>
 
 <script>
     $(document).ready(function () {
@@ -67,45 +53,6 @@
                         updateCarbChart();
                     },
                     error: function (data) {
-                    }
-                });
-            }
-        });
-        $('#exportButton').click(function () {
-            var includeBlood = false;
-            var includeCarbs = false;
-            var includeInsulin = false;
-            if ($("#bloodSugar").is(':checked')) {
-                includeBlood = true;
-            }
-            if ($("#carbs").is(':checked')) {
-                includeCarbs = true;
-            }
-            if ($("#insulin").is(':checked')) {
-                includeInsulin = true;
-            }
-
-            var startTime = $('#startTime').val();
-            var endTime = $('#endTime').val();
-
-            if ((startTime != null && endTime != null) && (includeBlood == true || includeCarbs == true || includeInsulin == true)) {
-                $.ajax({
-                    url: "/Home/CreateExcelFile",
-                    data: {
-                        'startTime': startTime,
-                        'endTime': endTime,
-                        'includeBlood': includeBlood,
-                        'includeCarbs': includeCarbs,
-                        'includeInsulin': includeInsulin
-                    },
-                    type: "POST",
-                    success: function (data) {
-                        //alert("succes");
-                        //var response = JSON.parse(data);
-                        window.location.href = "@Url.RouteUrl(new { Controller = "Home", Action = "DownloadExcelFile" })/?fileName=" + data.fileName;
-                    },
-                    error: function (data) {
-                        alert("failure");
                     }
                 });
             }
