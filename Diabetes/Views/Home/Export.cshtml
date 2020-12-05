@@ -1,21 +1,27 @@
 ﻿@{
     ViewBag.Title = "Export Data";
-    //List<DateTime> dates = Model.bloodSugarEntries.Select(entry => entry.insertTime).ToList();
 }
 @model Diabetes.Models.User
     
     <div>
-        <h1>Export Data</h1>
-        <input type="datetime-local" id="startTime" />
-        <input type="datetime-local" id="endTime" />
+        <h1>Export Data</h1><br />
+        <div>
+            <h4>Select the dates to include:</h4>
+            <input type="datetime-local" id="startTime" />
+            <input type="datetime-local" id="endTime" />
+        </div>
 
-        <label for="bloodSugar">Blood Sugar:</label>
-        <input type="checkbox" id="bloodSugar" value="Blood" />
-        <label for="carbs">Carbs:</label>
-        <input type="checkbox" id="carbs" value="Carbs" />
-        <label for="insulin">Insulin:</label>
-        <input type="checkbox" id="insulin" value="Insulin" />
-
+        <div>
+            <h4>Select the data to include:</h4>
+            <div>
+                <label for="bloodSugar">Blood Sugar:</label>
+                <input type="checkbox" id="bloodSugar" value="Blood" /><br />
+                <label for="carbs">Carbs:</label>
+                <input type="checkbox" id="carbs" value="Carbs" /><br />
+                <label for="insulin">Insulin:</label>
+                <input type="checkbox" id="insulin" value="Insulin" /><br />
+            </div>
+        </div>
         <input type="button" id="exportButton" value="Export" />
     </div>
 

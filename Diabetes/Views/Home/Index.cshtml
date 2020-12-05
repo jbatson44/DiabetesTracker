@@ -99,6 +99,7 @@
 </div>
 <br /><br /><br /><br /><br /><br />
 <script>
+    // Delete blood sugar
     function deleteBloodSugarEntry(entryId) {
         $.ajax({
                 url: "/Home/DeleteBloodSugar",
@@ -107,7 +108,7 @@
                 },
                 type: "POST",
                 success: function (data) {
-                    var url = '@Url.Action("Calendar", "Home")';
+                    var url = '@Url.Action("Index", "Home")';
                     window.location.href = url;
                 },
                 error: function (data) {
@@ -115,6 +116,8 @@
                 }
             });
     }
+
+    // Delete carbs entry
     function deleteCarbsEntry(entryId) {
         $.ajax({
                 url: "/Home/DeleteCarbs",
@@ -131,6 +134,8 @@
                 }
             });
     }
+
+    // Delete insulin entry
     function deleteInsulinEntry(entryId) {
         $.ajax({
                 url: "/Home/DeleteInsulin",
@@ -148,6 +153,7 @@
             });
     }
     $(document).ready(function () {
+        // set time value to the current time
         var date = new Date();
         var hour = date.getHours();
         var minutes = date.getMinutes();
@@ -160,6 +166,7 @@
         $('#timeInsulin').val(currentTime);
         $('#timeBS').val(currentTime);
 
+        // Go to the previous day
         $('#dayBefore').click(function () {
             $.ajax({
                 url: "/Home/IncrementDecrementDate",
@@ -177,9 +184,8 @@
             });
 
         });
-    });
 
-    $(document).ready(function () {
+        // Go to the next day
         $('#dayAfter').click(function () {
             $.ajax({
                 url: "/Home/IncrementDecrementDate",
@@ -197,31 +203,8 @@
             });
 
         });
-    });
 
-    $(document).ready(function () {
-        $('#Add').click(function () {
-            var carbs = $('#carbs').val();
-            var insulin = $('#insulin').val();
-            var bloodSugar = $('#bloodSugar').val();
-            $.ajax({
-                url: "/Home/IncrementDecrementDate",
-                data: {
-                    'move': -1
-                },
-                type: "POST",
-                success: function (data) {
-                    var url = '@Url.Action("Index", "Home")';
-                    window.location.href = url;
-                },
-                error: function (data) {
-                   // alert("Failed insulin");
-                }
-            });
-
-        });
-    });
-    $(document).ready(function () {
+        // Add blood sugar entry
         $('#bloodSugarAdd').click(function () {
             var bsLevel = $('#bloodSugar').val();
             var time = $('#timeBS').val();
@@ -253,9 +236,8 @@
                 });
             }
         });
-    });
 
-    $(document).ready(function () {
+        // Add carb entry
         $('#carbsAdd').click(function () {
             var carbs = $('#carbs').val();
             var time = $('#timeCarbs').val();
@@ -287,9 +269,8 @@
                 });
             }
         });
-    });
 
-    $(document).ready(function () {
+        // Add insulin entry
         $('#insulinAdd').click(function () {
             var units = $('#units').val();
             var insulinType = $("[name='insulinType']:checked").val();
