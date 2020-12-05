@@ -14,14 +14,20 @@ namespace Diabetes.Controllers
     public class LoginController : Controller
     {
         public static DBConnect database;
+        public static SignInModel signIn;
         // GET: Login
-        public ActionResult SignIn()
+        public ActionResult SignIn(bool signInFail = false)
         {
             if (database == null)
             {
                 database = new DBConnect();
             }
-            return View();
+            if (signIn == null)
+            {
+                signIn = new SignInModel();
+            }
+            signIn.SignInFailed = signInFail;
+            return View(signIn);
         }
         
         public ActionResult Login(string userName, string passWord)
@@ -30,12 +36,11 @@ namespace Diabetes.Controllers
             
             if (id == 0)
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json("error", JsonRequestBehavior.AllowGet);
+                return RedirectToAction("SignIn", "Login", new { signInFail = true });
             }
             else
             {
-                return Json(new { userId = id }, JsonRequestBehavior.AllowGet);
+                return RedirectToAction("Calendar", "Home", new { userId = id});
             }  
         }
 
@@ -45,14 +50,21 @@ namespace Diabetes.Controllers
             {
                 database = new DBConnect();
             }
-            return View();
+            if (signIn == null)
+            {
+                signIn = new SignInModel()
+                {
+                    SignInFailed = false
+                };
+            }
+            return View(signIn);
         }
 
         public ActionResult CreateNewUser(string firstName, string lastName, string userName, string passWord)
         {
             database.CreateUser(firstName, lastName, userName, passWord);
-            
-            return Json("success", JsonRequestBehavior.AllowGet);
+
+            return RedirectToAction("SignIn", "Login");
         }
     }
 }

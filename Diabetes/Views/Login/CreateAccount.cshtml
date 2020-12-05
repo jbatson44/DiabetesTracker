@@ -1,23 +1,28 @@
 ﻿
 @{
     Layout = "~/Views/Shared/LoggedOut_Layout.cshtml";
-    ViewBag.Title = "CreateAccount";
+    ViewBag.Title = "Create Account";
 }
 
 
     <div class="center-block" style="width:40%">
         <h2>Create Account</h2>
-        <label for="first">First Name:</label>
-        <input type="text" id="first" /><br />
-        <label for="last">Last Name:</label>
-        <input type="text" id="last" /><br />
-        <label for="user">Username:</label>
-        <input type="text" id="user" /><br />
-        <label for="pass">Password:</label>
-        <input type="password" id="pass" /><br />
-        <p id="createError" style="color:red;"></p>
-        <input type="button" value="Create account" id="create" />
-        @Html.ActionLink("Go to login", "SignIn", "Login")
+        <form action="CreateNewUser/Login" method="post">
+            <label for="first">First Name:</label>
+            <input type="text" name="firstName" /><br />
+            <label for="last">Last Name:</label>
+            <input type="text" name="lastName" /><br />
+            <label for="user">Username:</label>
+            <input type="text" name="userName" /><br />
+            <label for="pass">Password:</label>
+            <input type="password" name="passWord" /><br />
+            @if (Model != null && Model.SignInFailed)
+            {
+                <p id="loginError" style="color:red;">Unable to create account.</p>
+            }
+            <input type="submit" value="Create account" id="create" />
+            @Html.ActionLink("Go to login", "SignIn", "Login")
+        </form>
     </div>
 
     <script>
