@@ -58,7 +58,7 @@ namespace Diabetes.Controllers
         {
             user.chosenDate = user.chosenDate.AddDays(move);
             
-            GetDataByDates(DateTime.Now, user.chosenDate, true, true, true);
+            GetDataByDates(DateTime.UtcNow, user.chosenDate, true, true, true);
             
             return Json("success", JsonRequestBehavior.AllowGet);
         }
@@ -148,7 +148,7 @@ namespace Diabetes.Controllers
 
         public ActionResult GetDataByTimeframe(int timeFrame, bool includeBlood, bool includeCarbs, bool includeInsulin)
         {
-            DateTime endTime = DateTime.Now;
+            DateTime endTime = DateTime.UtcNow;
             DateTime beginTime = endTime.AddDays(-timeFrame);
 
             user.allEntries.Clear();
@@ -215,7 +215,7 @@ namespace Diabetes.Controllers
             if (user.bloodSugarEntries != null && user.bloodSugarEntries.Count > 0)
             {
                 DateTime furthestBack = user.bloodSugarEntries.Last().insertTime;
-                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.UtcNow.AddDays(-30);
             }
             List<object> iData = new List<object>();
             //Creating sample data  
@@ -225,7 +225,7 @@ namespace Diabetes.Controllers
 
             foreach(BloodSugarEntry bse in user.bloodSugarEntries)
             {
-                if (bse.insertTime >= earliest && bse.insertTime < DateTime.Now)
+                if (bse.insertTime >= earliest && bse.insertTime < DateTime.UtcNow)
                 {
                     DataRow dr = dt.NewRow();
                     dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
@@ -264,7 +264,7 @@ namespace Diabetes.Controllers
             if (user.insulinEntries != null && user.insulinEntries.Count > 0)
             {
                 DateTime furthestBack = user.insulinEntries.Last().insertTime;
-                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.UtcNow.AddDays(-30);
             }
             List<object> iData = new List<object>();
             //Creating sample data  
@@ -274,7 +274,7 @@ namespace Diabetes.Controllers
 
             foreach (InsulinEntry bse in user.insulinEntries)
             {
-                if (bse.insertTime >= earliest && bse.insertTime < DateTime.Now)
+                if (bse.insertTime >= earliest && bse.insertTime < DateTime.UtcNow)
                 {
                     DataRow dr = dt.NewRow();
                     dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
@@ -313,7 +313,7 @@ namespace Diabetes.Controllers
             if (user.carbEntries != null && user.carbEntries.Count > 0)
             {
                 DateTime furthestBack = user.carbEntries.Last().insertTime;
-                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.Now.AddDays(-30);
+                earliest = new DateTime(furthestBack.Year, furthestBack.Month, furthestBack.Day);//DateTime.UtcNow.AddDays(-30);
             }
             List<object> iData = new List<object>();
             //Creating sample data  
@@ -323,7 +323,7 @@ namespace Diabetes.Controllers
 
             foreach (CarbEntry bse in user.carbEntries)
             {
-                if (bse.insertTime >= earliest && bse.insertTime < DateTime.Now)
+                if (bse.insertTime >= earliest && bse.insertTime < DateTime.UtcNow)
                 {
                     DataRow dr = dt.NewRow();
                     dr["Date"] = bse.insertTime.ToString("yyyy-MM-ddTHH:mm:ss");
@@ -414,7 +414,7 @@ namespace Diabetes.Controllers
                 }
                 worksheet.Columns().AdjustToContents();
 
-                string fileName = user.firstName + "_" + user.lastName + "-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+                string fileName = user.firstName + "_" + user.lastName + "-" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".xlsx";
                 string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
                 using (var filestream = new MemoryStream())
                 {
