@@ -18,7 +18,7 @@ namespace Diabetes.Controllers
         public static User user;
         public static DBConnect database;
 
-        public ActionResult Index(int? userId)
+        public ActionResult Trends(int? userId)
         {
             if ((userId == 0 || userId == null) && user == null)
             {
@@ -35,7 +35,7 @@ namespace Diabetes.Controllers
             return View(user);
         }
 
-        public ActionResult Calendar(int? userId)
+        public ActionResult Index(int? userId)
         {
             if ((userId == 0 || userId == null) && user == null)
             {

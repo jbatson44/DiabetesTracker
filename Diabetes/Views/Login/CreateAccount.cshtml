@@ -25,37 +25,4 @@
         </form>
     </div>
 
-    <script>
-    $(document).ready(function () {
-        $('#create').click(function () {
-            var firstName = $('#first').val();
-            var lastName = $('#last').val();
-            var userName = $('#user').val();
-            var passWord = $('#pass').val();
-
-            if (!userName || !passWord || !firstName || !lastName) {
-                $('#createError').text("Please fill all fields");
-            }
-            else {
-                $('#createError').text("");
-                $.ajax({
-                    url: "/Login/CreateNewUser",
-                    data: {
-                        'userName': userName,
-                        'passWord': passWord,
-                        'firstName': firstName,
-                        'lastName': lastName
-                    },
-                    type: "POST",
-                    success: function (data) {
-                        var url = '@Url.Action("SignIn", "Login")';
-                        window.location.href = url;
-                    },
-                    error: function (data) {
-                        alert("Failed to create account")
-                    }
-                });
-            }
-        });
-    });
-    </script>
+    

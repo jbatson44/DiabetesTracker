@@ -40,7 +40,7 @@ namespace Diabetes.Controllers
             }
             else
             {
-                return RedirectToAction("Calendar", "Home", new { userId = id});
+                return RedirectToAction("Index", "Home", new { userId = id});
             }  
         }
 

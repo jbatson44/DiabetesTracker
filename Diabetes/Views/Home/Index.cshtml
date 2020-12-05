@@ -1,56 +1,328 @@
 ﻿@{
-    ViewBag.Title = "Trends";
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model Diabetes.Models.User
-@*<script src="~/Scripts/Chart.js"></script>*@
-<h1>Trends</h1>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0-rc.1/Chart.bundle.js"></script>
-<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-
+@using Diabetes.Models
+    <br />
 <div>
-    <input type="button" id="lastSeven" value="Last 7 Days" />
-    <input type="button" id="lastThirty" value="Last 30 Days" />
+    <h1>@Model.firstName @Model.lastName</h1>
+    <div>
+        <div class="col-md-6">
+            <input type="button" id="dayBefore" value="Previous Day"/>
+            @if (Model.chosenDate == DateTime.Today)
+            {
+                <input type="button" id="dayAfter" value="Next Day" disabled />
+            }
+            else
+            {
+                <input type="button" id="dayAfter" value="Next Day"/>
+            }
+            <h2>@Model.chosenDate.ToString("M/d/yyyy")</h2>
 
-    <label for="beginTime">Start Time:</label>
-    <input type="datetime-local" id="beginTimeChart" />
-    <label for="endTime">End Time:</label>
-    <input type="datetime-local" id="endTimeChart" /><br />
-    <input type="button" id="dates" value="Get Data" />
+        </div>
+        <div class="col-md-6">
+            <h3>A1c: @Model.A1c.ToString("0.00")</h3><br /><br />
+        </div>
+    </div>
+
+    <div>
+        <div class="col-md-6">
+            <h2>Add Data</h2>
+            <label for="bloodSugar">Blood Sugar:</label>
+            <input type="number" id="bloodSugar" /><br />
+            <label for="timeBS">Time:</label>
+            <input type="time" id="timeBS" />
+            <p id="BSError" style="color:red;"></p>
+            <input type="button" value="Add Blood sugar" id="bloodSugarAdd" /><br /><br />
+
+            <label for="units">Insulin:</label>
+            <input type="number" id="units" /><br />
+            <label for="fastInsulin">Fast</label>
+            <input type="radio" id="fastInsulin" name="insulinType" value="fast">
+            <label for="slowInsulin">Slow</label>
+            <input type="radio" id="slowInsulin" name="insulinType" value="slow"><br />
+            <label for="timeInsulin">Time:</label>
+            <input type="time" id="timeInsulin" />
+            <p id="InsulinError" style="color:red;"></p>
+            <input type="button" value="Add insulin" id="insulinAdd" /><br /><br />
+
+
+            <label for="carbs">Carbs:</label>
+            <input type="number" id="carbs" /><br />
+            <label for="timeCarbs">Time:</label>
+            <input type="time" id="timeCarbs" />
+            <p id="CarbsError" style="color:red;"></p>
+            <input type="button" value="Add carbs" id="carbsAdd" /><br /><br />
+        </div>
+        <div class="col-md-6">
+            <div id="results">
+                <br />
+                <ul>
+                    @foreach (Entry entry in Model.allEntries)
+                    {
+                        if (entry.insertTime.Year == Model.chosenDate.Year &&
+                            entry.insertTime.Month == Model.chosenDate.Month &&
+                            entry.insertTime.Day == Model.chosenDate.Day)
+                        {
+                            if (entry is CarbEntry)
+                            {
+                                CarbEntry c = (CarbEntry)entry;
+                            <li>
+                                Ate <b>@c.carbs</b> carbs at <b>@c.insertTime.ToString("h:mm tt")</b>
+                                <input type="button" onclick="deleteCarbsEntry(@entry.entryID)"/>
+                            </li>
+                            }
+                            else if (entry is BloodSugarEntry)
+                            {
+                                BloodSugarEntry b = (BloodSugarEntry)entry;
+                <li>
+                    Blood sugar level of <b>@b.bloodSugar</b> at <b>@b.insertTime.ToString("h:mm tt")</b>
+                    <input type="button" onclick="deleteBloodSugarEntry(@entry.entryID)" />
+                </li>
+                            }
+                            else if (entry is InsulinEntry)
+                            {
+                                InsulinEntry i = (InsulinEntry)entry;
+                <li>
+                    Took <b>@i.units</b> units at <b>@i.insertTime.ToString("h:mm tt")</b>
+                    <input type="button" onclick="deleteInsulinEntry(@entry.entryID)" />
+                </li>
+                            }
+                            <br />
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div id='BSChart'></div>
-<div id='InsulinChart'></div>
-<div id='CarbChart'></div>
-
-
+<br /><br /><br /><br /><br /><br />
 <script>
+    function deleteBloodSugarEntry(entryId) {
+        $.ajax({
+                url: "/Home/DeleteBloodSugar",
+                data: {
+                    'entryId': entryId
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Calendar", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   //alert("Failed insulin");
+                }
+            });
+    }
+    function deleteCarbsEntry(entryId) {
+        $.ajax({
+                url: "/Home/DeleteCarbs",
+                data: {
+                    'entryId': entryId
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   //alert("Failed insulin");
+                }
+            });
+    }
+    function deleteInsulinEntry(entryId) {
+        $.ajax({
+                url: "/Home/DeleteInsulin",
+                data: {
+                    'entryId': entryId
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   //alert("Failed insulin");
+                }
+            });
+    }
     $(document).ready(function () {
-        dataByTimeframe(7);
-        $('#lastSeven').click(function () {
-            dataByTimeframe(7);
-        });
-        $('#lastThirty').click(function () {
-            dataByTimeframe(30);
-        });
-        $('#dates').click(function () {
-            var beginTime = $('#beginTimeChart').val();
-            var endTime = $('#endTimeChart').val();
+        var date = new Date();
+        var hour = date.getHours();
+        var minutes = date.getMinutes();
 
-            if (beginTime !== null && endTime !== null) {
+        hour = (hour < 10 ? "0" : "") + hour;
+        minutes = (minutes < 10 ? "0" : "") + minutes;
+
+        var currentTime = hour + ":" + minutes;
+        $('#timeCarbs').val(currentTime);
+        $('#timeInsulin').val(currentTime);
+        $('#timeBS').val(currentTime);
+
+        $('#dayBefore').click(function () {
+            $.ajax({
+                url: "/Home/IncrementDecrementDate",
+                data: {
+                    'move': -1
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   //alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('#dayAfter').click(function () {
+            $.ajax({
+                url: "/Home/IncrementDecrementDate",
+                data: {
+                    'move': 1
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   // alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('#Add').click(function () {
+            var carbs = $('#carbs').val();
+            var insulin = $('#insulin').val();
+            var bloodSugar = $('#bloodSugar').val();
+            $.ajax({
+                url: "/Home/IncrementDecrementDate",
+                data: {
+                    'move': -1
+                },
+                type: "POST",
+                success: function (data) {
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                   // alert("Failed insulin");
+                }
+            });
+
+        });
+    });
+    $(document).ready(function () {
+        $('#bloodSugarAdd').click(function () {
+            var bsLevel = $('#bloodSugar').val();
+            var time = $('#timeBS').val();
+
+            if (!bsLevel || !time) {
+                $('#BSError').text("Please fill all fields");
+            }
+            else {
+                $('#BSError').text("");
+                var hours = time.split(":")[0];
+                var minutes = time.split(":")[1];
+
                 $.ajax({
-                    url: "/Home/GetDataByDates",
+                    url: "/Home/AddBloodSugarLevelTwo",
                     data: {
-                        'beginTime': beginTime,
-                        'endTime': endTime,
-                        'includeBlood': true,
-                        'includeCarbs': true,
-                        'includeInsulin': true
+                        'BSLevel': bsLevel,
+                        'dateTime': '@Model.chosenDate',
+                        'hours': hours,
+                        'minutes': minutes
                     },
                     type: "POST",
                     success: function (data) {
-                        updateBSChart();
-                        updateInsulinChart();
-                        updateCarbChart();
+                        var url = '@Url.Action("Index", "Home")';
+                        window.location.href = url;
+                    },
+                    error: function (data) {
+
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#carbsAdd').click(function () {
+            var carbs = $('#carbs').val();
+            var time = $('#timeCarbs').val();
+
+            if (!carbs || !time) {
+                $('#CarbsError').text("Please fill all fields");
+            }
+            else {
+                var hours = time.split(":")[0];
+                var minutes = time.split(":")[1];
+
+                $('#CarbsError').text("");
+                $.ajax({
+                    url: "/Home/AddCarbsTwo",
+                    data: {
+                        'carbs': carbs,
+                        'dateTime': '@Model.chosenDate',
+                        'hours': hours,
+                        'minutes': minutes
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        var url = '@Url.Action("Index", "Home")';
+                        window.location.href = url;
+                    },
+                    error: function (data) {
+
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#insulinAdd').click(function () {
+            var units = $('#units').val();
+            var insulinType = $("[name='insulinType']:checked").val();
+            var time = $('#timeInsulin').val();
+
+            var insulinInt = 0;
+            if (insulinType == "fast") {
+                insulinInt = 1;
+            }
+            else {
+                insulinInt = 2;
+            }
+
+            if (!units || !time) {
+                $('#InsulinError').text("Please fill all fields");
+            }
+            else {
+                $('#InsulinError').text("");
+                var hours = time.split(":")[0];
+                var minutes = time.split(":")[1];
+                $.ajax({
+                    url: "/Home/AddInsulinTwo",
+                    data: {
+                        'units': units,
+                        'dateTime': '@Model.chosenDate',
+                        'hours': hours,
+                        'minutes': minutes,
+                        'insulinType': insulinInt
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        var url = '@Url.Action("Index", "Home")';
+                        window.location.href = url;
                     },
                     error: function (data) {
                     }
@@ -58,105 +330,5 @@
             }
         });
     });
-    function dataByTimeframe(timeFrame) {
-        $.ajax({
-            url: "/Home/GetDataByTimeframe",
-            data: {
-                'timeFrame': timeFrame,
-                'includeBlood': true,
-                'includeCarbs': true,
-                'includeInsulin': true
-            },
-            type: "POST",
-            success: function (data) {
-                updateBSChart();
-                updateInsulinChart();
-                updateCarbChart();
-            },
-            error: function (data) {
-            }
-        });
-    }
-    function updateChart(chData, mainTitle, yTitle, chartId) {
-        console.log(chData)
-        var data = [
-            {
-                x: chData[1],
-                y: chData[2],
-                type: 'scatter'
-            }
-        ];
-        var layout = {
-            title: {
-                text: mainTitle,
-                font: {
-                    //family: 'Courier New, monospace',
-                    size: 24
-                },
-                xref: 'paper',
-                x: 0.05,
-            },
-            xaxis: {
-                title: {
-                    text: 'Date',
-                    font: {
-                        //family: 'Courier New, monospace',
-                        size: 18,
-                        color: '#7f7f7f'
-                    }
-                },
-                range: [new Date(chData[3][0]), new Date(chData[3][1])],
-                type: 'date'
-            },
-            yaxis: {
-                title: {
-                    text: yTitle,
-                    font: {
-                        //family: 'Courier New, monospace',
-                        size: 18,
-                        color: '#7f7f7f'
-                    }
-                },
-                autorange: true,
-                range: [0, 400],
-                type: 'linear'
-            }
-        };
-        Plotly.newPlot(chartId, data, layout);
-    }
-    function updateBSChart() {
-        $.ajax({
-            type: "POST",
-            url: "/Home/BSChart",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (chData) {
-                updateChart(chData, 'Blood Sugar', 'Blood Sugar Level', 'BSChart');
-            }
-        });
-    }
-    function updateInsulinChart() {
-        $.ajax({
-            type: "POST",
-            url: "/Home/InsulinChart",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (chData) {
-                updateChart(chData, 'Insulin', 'Units of Insulin', 'InsulinChart');
-            }
-        });
-    }
-    function updateCarbChart() {
-        $.ajax({
-            type: "POST",
-            url: "/Home/CarbChart",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (chData) {
-                updateChart(chData, 'Carbs', 'Carbs Eaten', 'CarbChart');
-            }
-        });
-    }
-
 </script>
 
