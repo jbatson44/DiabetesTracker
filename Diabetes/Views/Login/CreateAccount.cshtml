@@ -20,7 +20,7 @@
         @Html.ActionLink("Go to login", "SignIn", "Login")
     </div>
 
-<script>
+    <script>
     $(document).ready(function () {
         $('#create').click(function () {
             var firstName = $('#first').val();
@@ -43,7 +43,8 @@
                     },
                     type: "POST",
                     success: function (data) {
-                        alert("Account created")
+                        var url = '@Url.Action("SignIn", "Login")';
+                        window.location.href = url;
                     },
                     error: function (data) {
                         alert("Failed to create account")
@@ -52,4 +53,4 @@
             }
         });
     });
-</script>
+    </script>
