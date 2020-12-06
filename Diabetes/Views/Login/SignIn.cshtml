@@ -11,10 +11,24 @@
         <br />
 
         <form action="Login/Login" method="post">
-            <label for="userName">Username:</label>
-            <input type="text" name="userName" required /><br />
-            <label for="passWord">Password:</label>
-            <input type="password" name="passWord" required />
+            <table>
+                <tr>
+                    <td class="login-items">
+                        <b>Username:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="userName" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Password:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="password" name="passWord" required />
+                    </td>
+                </tr>
+            </table>
 
             @if (Model != null && Model.SignInFailed)
             {
@@ -24,5 +38,4 @@
             <input type="submit" value="Login" />
             @Html.ActionLink("Create an account", "CreateAccount", "Login")
         </form>
-        
     </div>

@@ -29,7 +29,7 @@ namespace Diabetes.Controllers
                 database = new DBConnect();
                 user = new User();
                 database.LoadUser((int)userId, user);
-                GetDataByTimeframe(30, true, true, true);
+                //GetDataByTimeframe(30, true, true, true);
                 user.chosenDate = DateTime.Today;
             }
             return View(user);
@@ -47,7 +47,7 @@ namespace Diabetes.Controllers
                 user = new User();
                 database.LoadUser((int)userId, user);
                 user.allEntries = new List<Entry>();
-                GetDataByTimeframe(30, true, true, true);
+                //GetDataByTimeframe(30, true, true, true);
                 user.chosenDate = DateTime.Today;
             }
             GetDataByDates(user.chosenDate.AddDays(1), user.chosenDate, true, true, true);
@@ -69,23 +69,7 @@ namespace Diabetes.Controllers
             return RedirectToAction("SignIn", "Login");
         }
 
-        public ActionResult AddData()
-        {
-            if (user == null)
-            {
-                return RedirectToAction("SignIn", "Login");
-            }
-
-            return View();
-        }
-
-        public ActionResult AddBloodSugarLevel(int BSLevel, DateTime dateTime)
-        {
-            database.AddBloodSugarLevel(BSLevel, dateTime, user.userId);
-            return Json("success", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AddBloodSugarLevelTwo(int BSLevel, DateTime dateTime, int hours, int minutes)
+        public ActionResult AddBloodSugarLevel(int BSLevel, DateTime dateTime, int hours, int minutes)
         {
             DateTime date = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hours, minutes, 0);
             database.AddBloodSugarLevel(BSLevel, date, user.userId);
@@ -98,13 +82,7 @@ namespace Diabetes.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AddCarbs(int carbs, DateTime dateTime)
-        {
-            database.AddCarbs(carbs, dateTime, user.userId);
-            return Json("success", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AddCarbsTwo(int carbs, DateTime dateTime, int hours, int minutes)
+        public ActionResult AddCarbs(int carbs, DateTime dateTime, int hours, int minutes)
         {
             DateTime date = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hours, minutes, 0);
             database.AddCarbs(carbs, date, user.userId);
@@ -117,13 +95,7 @@ namespace Diabetes.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AddInsulin(int units, DateTime dateTime, int insulinType)
-        {
-            database.AddInsulin(units, dateTime, insulinType, user.userId);
-            return Json("success", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AddInsulinTwo(int units, DateTime dateTime, int insulinType, int hours, int minutes)
+        public ActionResult AddInsulin(int units, DateTime dateTime, int insulinType, int hours, int minutes)
         {
             DateTime date = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hours, minutes, 0);
             database.AddInsulin(units, date, insulinType, user.userId);
@@ -194,7 +166,7 @@ namespace Diabetes.Controllers
                 user.allEntries.AddRange(user.insulinEntries);
             }
             user.allEntries = user.allEntries.OrderBy(entry => entry.insertTime).ToList();
-            var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
+            var json = JsonConvert.SerializeObject(user.A1c);
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
@@ -271,7 +243,7 @@ namespace Diabetes.Controllers
             DataTable dt = new DataTable();
             dt.Columns.Add("Date", System.Type.GetType("System.String"));
             dt.Columns.Add("Insulin", System.Type.GetType("System.Int32"));
-
+            
             foreach (InsulinEntry bse in user.insulinEntries)
             {
                 if (bse.insertTime >= earliest && bse.insertTime < DateTime.UtcNow)
@@ -363,7 +335,7 @@ namespace Diabetes.Controllers
             using (IXLWorkbook workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add();
-                // copy what I did for mela
+                
                 int rowNum = 1;
                 int colNum = 1;
 
@@ -417,17 +389,10 @@ namespace Diabetes.Controllers
                 string fileName = user.firstName + "_" + user.lastName + "-" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".xlsx";
                 string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
                 using (var filestream = new MemoryStream())
-                {
-                   // workbook.SaveAs(Path.Combine(Server.MapPath("~/temp"), fileName));
-                    //filestream.Flush();
-
-                    //return File(filestream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadshetml.sheet", fileName);
-                }
+                
                 workbook.SaveAs(fullPath);
                 return Json(new { fileName = fileName });
             }
-
-            //return Json("success", JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

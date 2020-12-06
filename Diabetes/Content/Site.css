@@ -32,3 +32,46 @@ textarea {
     max-width: 280px;
 }
 
+td.login-items {
+    width: 100px;
+    height: 30px;
+}
+
+td.input-items {
+    width: 150px;
+    height: 30px;
+}
+
+td.list-items {
+    width: 300px;
+    height: 30px;
+    padding: 10px 10px 10px 10px;
+}
+
+tr.list-items {
+    border-bottom: 2px solid grey;
+}
+
+input.date {
+    width: 200px;
+}
+
+td.date {
+    width: 210px;
+}
+
+td.date-trends {
+    width: 100px;
+}
+
+td.types {
+    width: 100px;
+}
+
+h2 {
+    text-align: center;
+}
+
+#day-buttons {
+    text-align: center;
+}

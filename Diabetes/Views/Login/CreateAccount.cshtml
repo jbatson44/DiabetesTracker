@@ -8,14 +8,41 @@
     <div class="center-block" style="width:40%">
         <h2>Create Account</h2>
         <form action="CreateNewUser/Login" method="post">
-            <label for="first">First Name:</label>
-            <input type="text" name="firstName" /><br />
-            <label for="last">Last Name:</label>
-            <input type="text" name="lastName" /><br />
-            <label for="user">Username:</label>
-            <input type="text" name="userName" /><br />
-            <label for="pass">Password:</label>
-            <input type="password" name="passWord" /><br />
+            <table>
+                <tr>
+                    <td class="login-items">
+                        <b>First Name:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="firstName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Last Name:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="lastName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Username:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="userName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Password:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="password" name="passWord" />
+                    </td>
+                </tr>
+            </table>
+            <br />
             @if (Model != null && Model.SignInFailed)
             {
                 <p id="loginError" style="color:red;">Unable to create account.</p>
