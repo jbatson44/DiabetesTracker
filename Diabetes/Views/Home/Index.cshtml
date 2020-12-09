@@ -114,7 +114,6 @@
             </div>
             <div class="col-md-6">
                 <div id="results">
-                    <br />
                     <table class="list-items">
                         @foreach (Entry entry in Model.allEntries)
                         {
@@ -128,9 +127,12 @@
                                     CarbEntry c = (CarbEntry)entry;
                                     <tr class="list-items">
                                         <td class="list-items">
-                                            <b>@c.insertTime.ToString("h:mm tt")</b>: Ate <b>@c.carbs</b> carbs.
+                                            <b>@c.insertTime.ToString("h:mm tt"): </b>
                                         </td>
-                                        <td>
+                                        <td class="list-items">
+                                            Ate <b>@c.carbs</b> carbs.
+                                        </td>
+                                        <td class="right">
                                             <input type="button" value="Delete" onclick="deleteCarbsEntry(@entry.entryID)" />
                                         </td>
                                     </tr>
@@ -140,9 +142,12 @@
                                     BloodSugarEntry b = (BloodSugarEntry)entry;
                                     <tr class="list-items">
                                         <td class="list-items">
-                                            <b>@b.insertTime.ToString("h:mm tt")</b>: Blood sugar level of <b>@b.bloodSugar</b>.
+                                            <b>@b.insertTime.ToString("h:mm tt"): </b>
                                         </td>
-                                        <td>
+                                        <td class="list-items">
+                                            Blood sugar level of <b>@b.bloodSugar</b>.
+                                        </td>
+                                        <td class="right">
                                             <input type="button" value="Delete" onclick="deleteBloodSugarEntry(@entry.entryID)" />
                                         </td>
                                     </tr>
@@ -152,9 +157,12 @@
                                     InsulinEntry i = (InsulinEntry)entry;
                                     <tr class="list-items">
                                         <td class="list-items">
-                                            <b>@i.insertTime.ToString("h:mm tt")</b>: Took <b>@i.units</b> units. 
+                                            <b>@i.insertTime.ToString("h:mm tt"): </b>
                                         </td>
-                                        <td>
+                                        <td class="list-items">
+                                            Took <b>@i.units</b> units. 
+                                        </td>
+                                        <td class="right">
                                             <input type="button" value="Delete" onclick="deleteInsulinEntry(@entry.entryID)" />
                                         </td>
                                     </tr>
