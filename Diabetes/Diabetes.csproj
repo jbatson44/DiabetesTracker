@@ -199,6 +199,9 @@
     <Content Include="Views\Login\SignIn.Mobile.cshtml" />
     <Content Include="Views\Shared\LoggedOut_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Login\CreateAccount.Mobile.cshtml" />
+    <Content Include="Views\Home\Export.Mobile.cshtml" />
+    <Content Include="Views\Home\Trends.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

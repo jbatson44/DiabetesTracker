@@ -1,0 +1,55 @@
+﻿
+@{
+    Layout = "~/Views/Shared/LoggedOut_Layout.cshtml";
+    ViewBag.Title = "Create Account";
+}
+
+
+    <div class="center-block" style="width:70%">
+        <h2>Create Account</h2>
+        <form action="CreateNewUser/Login" method="post">
+            <table>
+                <tr>
+                    <td class="login-items">
+                        <b>First Name:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="firstName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Last Name:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="lastName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Username:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="text" name="userName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="login-items">
+                        <b>Password:</b>
+                    </td>
+                    <td class="login-items">
+                        <input type="password" name="passWord" />
+                    </td>
+                </tr>
+            </table>
+            <br />
+            @if (Model != null && Model.SignInFailed)
+            {
+                <p id="loginError" style="color:red;">Unable to create account.</p>
+            }
+            <input type="submit" value="Create account" id="create" />
+            @Html.ActionLink("Go to login", "SignIn", "Login")
+        </form>
+    </div>
+
+    

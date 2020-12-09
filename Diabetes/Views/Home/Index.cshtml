@@ -30,7 +30,7 @@
                 <table>
                     <tr>
                         <td class="input-items">
-                            Blood Sugar:
+                            <b>Blood Sugar:</b>
                         </td>
                         <td class="input-items">
                             <input type="number" id="bloodSugar" />
@@ -38,7 +38,7 @@
                     </tr>
                     <tr>
                         <td class="input-items">
-                            Time:
+                            <b>Time:</b>
                         </td>
                         <td class="input-items">
                             <input type="time" id="timeBS" />
@@ -58,31 +58,15 @@
                 <table>
                     <tr>
                         <td class="input-items">
-                            Insulin:
+                            <b>Insulin:</b>
                         </td>
                         <td class="input-items">
                             <input type="number" id="units" />
                         </td>
                     </tr>
-                    @*<tr>
-                        <td>
-                            Fast
-                        </td>
-                        <td>
-                            <input type="radio" id="fastInsulin" name="insulinType" value="fast">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Slow
-                        </td>
-                        <td>
-                            <input type="radio" id="slowInsulin" name="insulinType" value="slow">
-                        </td>
-                    </tr>*@
                     <tr>
                         <td class="input-items">
-                            Time:
+                            <b>Time:</b>
                         </td>
                         <td class="input-items">
                             <input type="time" id="timeInsulin" />
@@ -102,7 +86,7 @@
                 <table>
                     <tr>
                         <td class="input-items">
-                            Carbs:
+                            <b>Carbs:</b>
                         </td>
                         <td class="input-items">
                             <input type="number" id="carbs" />
@@ -110,7 +94,7 @@
                     </tr>
                     <tr>
                         <td class="input-items">
-                            Time:
+                            <b>Time:</b>
                         </td>
                         <td class="input-items">
                             <input type="time" id="timeCarbs" />
@@ -144,7 +128,7 @@
                                     CarbEntry c = (CarbEntry)entry;
                                     <tr class="list-items">
                                         <td class="list-items">
-                                            Ate <b>@c.carbs</b> carbs at <b>@c.insertTime.ToString("h:mm tt")</b>
+                                            <b>@c.insertTime.ToString("h:mm tt")</b>: Ate <b>@c.carbs</b> carbs.
                                         </td>
                                         <td>
                                             <input type="button" value="Delete" onclick="deleteCarbsEntry(@entry.entryID)" />
@@ -156,7 +140,7 @@
                                     BloodSugarEntry b = (BloodSugarEntry)entry;
                                     <tr class="list-items">
                                         <td class="list-items">
-                                            Blood sugar level of <b>@b.bloodSugar</b> at <b>@b.insertTime.ToString("h:mm tt")</b>
+                                            <b>@b.insertTime.ToString("h:mm tt")</b>: Blood sugar level of <b>@b.bloodSugar</b>.
                                         </td>
                                         <td>
                                             <input type="button" value="Delete" onclick="deleteBloodSugarEntry(@entry.entryID)" />
@@ -168,7 +152,7 @@
                                     InsulinEntry i = (InsulinEntry)entry;
                                     <tr class="list-items">
                                         <td class="list-items">
-                                            Took <b>@i.units</b> units at <b>@i.insertTime.ToString("h:mm tt")</b>
+                                            <b>@i.insertTime.ToString("h:mm tt")</b>: Took <b>@i.units</b> units. 
                                         </td>
                                         <td>
                                             <input type="button" value="Delete" onclick="deleteInsulinEntry(@entry.entryID)" />

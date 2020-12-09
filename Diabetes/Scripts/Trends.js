@@ -51,10 +51,10 @@ function getDataByDates() {
             },
             type: "POST",
             success: function (data) {
-                var a1c = Number(data);
-                $('#a1c').html("A1c: " + a1c.toFixed(2));
+                var a1cNum = Number(data);
+                var a1c = "A1C: " + a1cNum.toFixed(2);
                 
-                updateBSChart();
+                updateBSChart(a1c);
                 updateInsulinChart();
                 updateCarbChart();
             },
@@ -111,70 +111,70 @@ function updateChart(chData, mainTitle, yTitle, chartId) {
     };
     Plotly.newPlot(chartId, data, layout);
 }
-function updateChartInsulin(chData, mainTitle, yTitle, chartId) {
-    console.log(chData)
-    var dataFast = [
-        {
-            x: chData[1],
-            y: chData[2],
-            type: 'scatter'
-        }
-    ];
-    var dataSlow = [
-        {
-            x: chData[3],
-            y: chData[4],
-            type: 'scatter'
-        }
-    ];
-    var data = [dataFast, dataSlow];
-    var layout = {
-        title: {
-            text: mainTitle,
-            font: {
-                //family: 'Courier New, monospace',
-                size: 24
-            },
-            xref: 'paper',
-            x: 0.05,
-        },
-        xaxis: {
-            title: {
-                text: 'Date',
-                font: {
-                    //family: 'Courier New, monospace',
-                    size: 18,
-                    color: '#7f7f7f'
-                }
-            },
-            autorange: true,
-            range: [new Date(chData[3][0]), new Date(chData[3][1])],
-            type: 'date'
-        },
-        yaxis: {
-            title: {
-                text: yTitle,
-                font: {
-                    //family: 'Courier New, monospace',
-                    size: 18,
-                    color: '#7f7f7f'
-                }
-            },
-            autorange: true,
-            range: [0, 400],
-            type: 'linear'
-        }
-    };
-    Plotly.newPlot(chartId, data, layout);
-}
-function updateBSChart() {
+//function updateChartInsulin(chData, mainTitle, yTitle, chartId) {
+//    console.log(chData)
+//    var dataFast = [
+//        {
+//            x: chData[1],
+//            y: chData[2],
+//            type: 'scatter'
+//        }
+//    ];
+//    var dataSlow = [
+//        {
+//            x: chData[3],
+//            y: chData[4],
+//            type: 'scatter'
+//        }
+//    ];
+//    var data = [dataFast, dataSlow];
+//    var layout = {
+//        title: {
+//            text: mainTitle,
+//            font: {
+//                //family: 'Courier New, monospace',
+//                size: 24
+//            },
+//            xref: 'paper',
+//            x: 0.05,
+//        },
+//        xaxis: {
+//            title: {
+//                text: 'Date',
+//                font: {
+//                    //family: 'Courier New, monospace',
+//                    size: 18,
+//                    color: '#7f7f7f'
+//                }
+//            },
+//            autorange: true,
+//            range: [new Date(chData[3][0]), new Date(chData[3][1])],
+//            type: 'date'
+//        },
+//        yaxis: {
+//            title: {
+//                text: yTitle,
+//                font: {
+//                    //family: 'Courier New, monospace',
+//                    size: 18,
+//                    color: '#7f7f7f'
+//                }
+//            },
+//            autorange: true,
+//            range: [0, 400],
+//            type: 'linear'
+//        }
+//    };
+//    Plotly.newPlot(chartId, data, layout);
+//}
+function updateBSChart(a1c) {
     $.ajax({
         type: "POST",
         url: "/Home/BSChart",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (chData) {
-            updateChart(chData, 'Blood Sugar', 'Blood Sugar Level', 'BSChart');
+            updateChart(chData, 'Blood Sugar ' + a1c, 'Blood Sugar Level', 'BSChart');
         }
     });
 }

@@ -40,12 +40,14 @@ td.login-items {
 td.input-items {
     width: 150px;
     height: 30px;
+    font-size: 16px;
 }
 
 td.list-items {
     width: 300px;
     height: 30px;
     padding: 10px 10px 10px 10px;
+    font-size: 16px;
 }
 
 tr.list-items {
@@ -53,19 +55,39 @@ tr.list-items {
 }
 
 input.date {
-    width: 200px;
+    width: 240px;
 }
 
 td.date {
-    width: 210px;
+    width: 260px;
+    font-size: 16px;
+    padding-bottom: 10px;
 }
+
+/*div.date-trends {
+    width: 40%;
+}*/
 
 td.date-trends {
     width: 100px;
+    text-align:center;
+    padding: 7px 4px 0px 12px;
+    font-size: 18px;
+}
+
+.mobile-trends {
+    font-size: 16px !important;
 }
 
 td.types {
-    width: 100px;
+    width: 200px;
+    font-size: 16px;
+    padding-bottom: 10px;
+}
+
+.right {
+    text-align: right;
+    padding-right: 20px;
 }
 
 h2 {

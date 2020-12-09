@@ -7,21 +7,21 @@
         <h2>Export Data</h2>
         <div style="border-top: 2px solid"></div><br />
         <div>
-            <h4><b>Select the dates to include:</b></h4>
+            <h4>Select the dates to include:</h4>
             <table>
                 <tr>
                     <td class="date">
                         <b>Start Date:</b>
                     </td>
-                    <td class="date">
-                        <b>End Date:</b>
+                    <td class="date right">
+                        <input class="date" type="datetime-local" id="startTime" />
                     </td>
                 </tr>
                 <tr>
                     <td class="date">
-                        <input class="date" type="datetime-local" id="startTime" />
+                        <b>End Date:</b>
                     </td>
-                    <td class="date">
+                    <td class="date right">
                         <input class="date" type="datetime-local" id="endTime" />
                     </td>
                 </tr>
@@ -29,35 +29,42 @@
         </div>
         <br />
         <div>
-            <h4><b>Select the data to include:</b></h4>
+            <h4>Select the data to include:</h4>
             <table>
                 <tr>
                     <td class="types">
-                        Blood Sugar:
+                        <b>Blood Sugar:</b>
                     </td>
-                    <td class="types">
+                    <td class="types right">
                         <input type="checkbox" id="bloodSugar" value="Blood" />
                     </td>
                 </tr>
                 <tr>
                     <td class="types">
-                        Carbs:
+                        <b>Carbs:</b>
                     </td>
-                    <td class="types">
+                    <td class="types right">
                         <input type="checkbox" id="carbs" value="Carbs" />
                     </td>
                 </tr>
                 <tr>
                     <td class="types">
-                        Insulin:
+                        <b>Insulin:</b>
                     </td>
-                    <td class="types">
+                    <td class="types right">
                         <input type="checkbox" id="insulin" value="Insulin" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td class="types right">
+                        <input type="button" id="exportButton" value="Export" />
                     </td>
                 </tr>
             </table>
         </div>
-        <input type="button" id="exportButton" value="Export" />
+
     </div>
 
     <script>
