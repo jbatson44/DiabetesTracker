@@ -5,7 +5,7 @@
 }
 
 
-    <div class="center-block" style="width:40%">
+    <div class="center-block" style="width:30%">
         <h2>Create Account</h2>
         <form action="CreateNewUser/Login" method="post">
             <table>
@@ -14,7 +14,7 @@
                         <b>First Name:</b>
                     </td>
                     <td class="login-items">
-                        <input type="text" name="firstName" />
+                        <input type="text" name="firstName" required/>
                     </td>
                 </tr>
                 <tr>
@@ -22,7 +22,7 @@
                         <b>Last Name:</b>
                     </td>
                     <td class="login-items">
-                        <input type="text" name="lastName" />
+                        <input type="text" name="lastName" required/>
                     </td>
                 </tr>
                 <tr>
@@ -30,7 +30,7 @@
                         <b>Username:</b>
                     </td>
                     <td class="login-items">
-                        <input type="text" name="userName" />
+                        <input type="text" name="userName" required/>
                     </td>
                 </tr>
                 <tr>
@@ -38,7 +38,7 @@
                         <b>Password:</b>
                     </td>
                     <td class="login-items">
-                        <input type="password" name="passWord" />
+                        <input type="password" name="passWord" required/>
                     </td>
                 </tr>
             </table>

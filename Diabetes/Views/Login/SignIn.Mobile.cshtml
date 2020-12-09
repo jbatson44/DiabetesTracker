@@ -4,15 +4,29 @@
     ViewBag.Title = "Sign In";
 }
 
-<div class="center-block" style="width:70%">
+<div class="center-block" style="width:80%">
     <h2 class="pageTitle">Sign In</h2>
 
     <br />
     <form action="Login/Login" method="post">
-        <label for="userName">Username:</label>
-        <input type="text" name="userName" required /><br />
-        <label for="passWord">Password:</label>
-        <input type="password" name="passWord" required />
+        <table>
+            <tr>
+                <td class="login-items">
+                    <b>Username:</b>
+                </td>
+                <td class="login-items">
+                    <input type="text" name="userName" required />
+                </td>
+            </tr>
+            <tr>
+                <td class="login-items">
+                    <b>Password:</b>
+                </td>
+                <td class="login-items">
+                    <input type="password" name="passWord" required />
+                </td>
+            </tr>
+        </table>
 
         @if (Model != null && Model.SignInFailed)
         {
