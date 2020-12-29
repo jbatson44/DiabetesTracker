@@ -30,7 +30,7 @@ namespace Diabetes.Controllers
             return View(signIn);
         }
         
-        public ActionResult Login(string userName, string passWord)
+        public ActionResult Login(string userName, string passWord, DateTime currentTime)
         {
             int id = database.Login(userName, passWord);
             
@@ -40,7 +40,7 @@ namespace Diabetes.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home", new { userId = id});
+                return RedirectToAction("Index", "Home", new { userId = id, date = currentTime});
             }  
         }
 

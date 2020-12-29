@@ -10,7 +10,7 @@
         <div>
             <div id="day-buttons">
                 <input type="button" id="dayBefore" value="Previous Day" />
-                @if (Model.chosenDate == DateTime.Today)
+                @if (Model.chosenDate == Model.currentDate)
                 {
                     <input type="button" id="dayAfter" value="Next Day" disabled />
                 }
@@ -276,7 +276,7 @@ $(document).ready(function () {
                 window.location.href = url;
             },
             error: function (data) {
-                // alert("Failed insulin");
+                
             }
         });
 

@@ -29,13 +29,12 @@ namespace Diabetes.Controllers
                 database = new DBConnect();
                 user = new User();
                 database.LoadUser((int)userId, user);
-                //GetDataByTimeframe(30, true, true, true);
                 user.chosenDate = DateTime.Today;
             }
             return View(user);
         }
 
-        public ActionResult Index(int? userId)
+        public ActionResult Index(int? userId, DateTime? date)
         {
             if ((userId == 0 || userId == null) && user == null)
             {
@@ -47,8 +46,8 @@ namespace Diabetes.Controllers
                 user = new User();
                 database.LoadUser((int)userId, user);
                 user.allEntries = new List<Entry>();
-                //GetDataByTimeframe(30, true, true, true);
-                user.chosenDate = DateTime.Today;
+                user.chosenDate = (DateTime)date;
+                user.currentDate = user.chosenDate;
             }
             GetDataByDates(user.chosenDate.AddDays(1), user.chosenDate, true, true, true);
             return View(user);
@@ -58,7 +57,7 @@ namespace Diabetes.Controllers
         {
             user.chosenDate = user.chosenDate.AddDays(move);
             
-            GetDataByDates(DateTime.UtcNow, user.chosenDate, true, true, true);
+            GetDataByDates(user.currentDate, user.chosenDate, true, true, true);
             
             return Json("success", JsonRequestBehavior.AllowGet);
         }
@@ -116,33 +115,6 @@ namespace Diabetes.Controllers
             }
 
             return View(user);
-        }
-
-        public ActionResult GetDataByTimeframe(int timeFrame, bool includeBlood, bool includeCarbs, bool includeInsulin)
-        {
-            DateTime endTime = DateTime.UtcNow;
-            DateTime beginTime = endTime.AddDays(-timeFrame);
-
-            user.allEntries.Clear();
-            if (includeBlood)
-            {
-                database.GetBloodSugar(endTime, beginTime, user);
-                CalculateA1c();
-                user.allEntries.AddRange(user.bloodSugarEntries);
-            }
-            if (includeCarbs)
-            {
-                database.GetCarbs(endTime, beginTime, user);
-                user.allEntries.AddRange(user.carbEntries);
-            }
-            if (includeInsulin)
-            {
-                database.GetInsulin(endTime, beginTime, user);
-                user.allEntries.AddRange(user.insulinEntries);
-            }
-            user.allEntries = user.allEntries.OrderBy(entry => entry.insertTime).ToList();
-            var json = JsonConvert.SerializeObject(user.bloodSugarEntries);
-            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetDataByDates(DateTime endTime, DateTime beginTime, bool includeBlood, bool includeCarbs, bool includeInsulin)

@@ -4,7 +4,7 @@
     ViewBag.Title = "Sign In";
 }
 @model Diabetes.Models.SignInModel
-
+    <script type="text/javascript" src="~/Scripts/SignIn.js"></script>
     <div class="center-block" style="width:30%">
         <h2 class="pageTitle">Sign In</h2>
 
@@ -29,7 +29,7 @@
                     </td>
                 </tr>
             </table>
-
+            <input class="date" type="datetime-local" id="currentTime" name="currentTime" style="display:none;"/>
             @if (Model != null && Model.SignInFailed)
             {
                 <p id="loginError" style="color:red;">Username or password is incorrect</p>
